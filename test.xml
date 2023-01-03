@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"  standalone="no" ?>
+<uniprot xmlns="http://uniprot.org/uniprot" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://uniprot.org/uniprot http://www.uniprot.org/docs/uniprot.xsd">
+<entry dataset="Swiss-Prot" created="1996-02-01" modified="2022-12-14" version="209" xmlns="http://uniprot.org/uniprot">
+  <accession>P49407</accession>
+  <accession>B6V9G8</accession>
+  <accession>O75625</accession>
+  <accession>O75630</accession>
+  <accession>Q2PP20</accession>
+  <accession>Q9BTK8</accession>
+  <name>ARRB1_HUMAN</name>
+  <gene>
+    <name type="primary">ARRB1</name>
+    <name type="synonym">ARR1</name>
+  </gene>
+  <organism>
+    <name type="scientific">Homo sapiens</name>
+    <name type="common">Human</name>
+    <dbReference type="NCBI Taxonomy" id="9606"/>
+    <lineage>
+      <taxon>Eukaryota</taxon>
+      <taxon>Metazoa</taxon>
+      <taxon>Chordata</taxon>
+      <taxon>Craniata</taxon>
+      <taxon>Vertebrata</taxon>
+      <taxon>Euteleostomi</taxon>
+      <taxon>Mammalia</taxon>
+      <taxon>Eutheria</taxon>
+      <taxon>Euarchontoglires</taxon>
+      <taxon>Primates</taxon>
+      <taxon>Haplorrhini</taxon>
+      <taxon>Catarrhini</taxon>
+      <taxon>Hominidae</taxon>
+      <taxon>Homo</taxon>
+    </lineage>
+  </organism>
+</entry>
+<copyright>
+Copyrighted by the UniProt Consortium, see https://www.uniprot.org/terms Distributed under the Creative Commons Attribution (CC BY 4.0) License
+</copyright>
+</uniprot>
+
