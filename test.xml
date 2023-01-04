@@ -1,41 +1,48 @@
+C:\Users\monar\AppData\Local\Programs\Python\Python39\python.exe C:\Users\monar\PycharmProjects\Haider_Review\test.py
 <?xml version="1.0" encoding="UTF-8"  standalone="no" ?>
 <uniprot xmlns="http://uniprot.org/uniprot" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://uniprot.org/uniprot http://www.uniprot.org/docs/uniprot.xsd">
-<entry dataset="Swiss-Prot" created="1996-02-01" modified="2022-12-14" version="209" xmlns="http://uniprot.org/uniprot">
-  <accession>P49407</accession>
-  <accession>B6V9G8</accession>
-  <accession>O75625</accession>
-  <accession>O75630</accession>
-  <accession>Q2PP20</accession>
-  <accession>Q9BTK8</accession>
-  <name>ARRB1_HUMAN</name>
-  <gene>
-    <name type="primary">ARRB1</name>
-    <name type="synonym">ARR1</name>
-  </gene>
-  <organism>
-    <name type="scientific">Homo sapiens</name>
-    <name type="common">Human</name>
-    <dbReference type="NCBI Taxonomy" id="9606"/>
-    <lineage>
-      <taxon>Eukaryota</taxon>
-      <taxon>Metazoa</taxon>
-      <taxon>Chordata</taxon>
-      <taxon>Craniata</taxon>
-      <taxon>Vertebrata</taxon>
-      <taxon>Euteleostomi</taxon>
-      <taxon>Mammalia</taxon>
-      <taxon>Eutheria</taxon>
-      <taxon>Euarchontoglires</taxon>
-      <taxon>Primates</taxon>
-      <taxon>Haplorrhini</taxon>
-      <taxon>Catarrhini</taxon>
-      <taxon>Hominidae</taxon>
-      <taxon>Homo</taxon>
-    </lineage>
-  </organism>
+<entry dataset="Swiss-Prot" created="1987-08-13" modified="2022-12-14" version="255" xmlns="http://uniprot.org/uniprot">
+  <accession>P05771</accession>
+  <accession>C5IFJ8</accession>
+  <accession>D3DWF5</accession>
+  <accession>O43744</accession>
+  <accession>P05127</accession>
+  <accession>Q15138</accession>
+  <accession>Q93060</accession>
+  <accession>Q9UE49</accession>
+  <accession>Q9UE50</accession>
+  <accession>Q9UEH8</accession>
+  <accession>Q9UJ30</accession>
+  <accession>Q9UJ33</accession>
+  <name>KPCB_HUMAN</name>
+  <protein>
+    <recommendedName>
+      <fullName>Protein kinase C beta type</fullName>
+      <shortName>PKC-B</shortName>
+      <shortName>PKC-beta</shortName>
+      <ecNumber evidence="18 19">2.7.11.13</ecNumber>
+    </recommendedName>
+  </protein>
+  </reference>
+  <reference key="7">
+    <citation type="journal article" date="1995" name="DNA Cell Biol." volume="14" first="213" last="222">
+      <title>Autoregulation of cloned human protein kinase C beta and gamma gene promoters in U937 cells.</title>
+      <authorList>
+        <person name="Mahajna J."/>
+        <person name="King P."/>
+        <person name="Parker P."/>
+        <person name="Haley J."/>
+      </authorList>
+      <dbReference type="PubMed" id="7880442"/>
+      <dbReference type="DOI" id="10.1089/dna.1995.14.213"/>
+    </citation>
+    <scope>NUCLEOTIDE SEQUENCE [GENOMIC DNA] OF 1-69</scope>
+  </reference>
 </entry>
 <copyright>
 Copyrighted by the UniProt Consortium, see https://www.uniprot.org/terms Distributed under the Creative Commons Attribution (CC BY 4.0) License
 </copyright>
 </uniprot>
+
+
 
