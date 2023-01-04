@@ -18,15 +18,13 @@ def uniprotList(path, file, column):
 # function to get information from a list of accession numbers
 def get_all_info(ID_list):
     result_df = pd.DataFrame()
-    parameters = ["Gene Name", "dummy"]
     for ID in ID_list:
         # adds all information gathered with import_xml to new column in result_df
         result_df[ID] = pd.Series(import_xml(ID), name = ID)
     # transpose df -> row per accession number and add column titels
     result_df = result_df.transpose()
     result_df = result_df.reset_index(level=0)
-    result_df.columns = ["ID", "Gene Name", "dummy"] ### !!! edit this according to extracted info!
-    print(result_df)
+    result_df.columns = ["ID", "Gene Name", "Species", "dummy"] ### !!! edit this according to extracted info!
     return(result_df)
 
 
@@ -45,9 +43,10 @@ def import_xml(accession_number):
 
     # extract certain information, for each own function
     gene_name = get_gene_name(entry_element)
+    species = get_species(entry_element)
     add_info = "dummy"
 
-    return([gene_name, add_info])
+    return([gene_name, species, add_info])
 
 
 # function to find gene_name in entry
@@ -58,11 +57,20 @@ def get_gene_name(entry_element):
         return (primary_gene_name)
 
 
+# function to find species in entry
+def get_species(entry_element):
+    for species in entry_element.findall(
+            './{http://uniprot.org/uniprot}organism/{http://uniprot.org/uniprot}name[@type="scientific"]'):
+        scientific_species = species.text
+        return (scientific_species)
+
+
 
 # function to export result, main function
 def export_xlsx(path, file, column):
     result_df = uniprotList(path, file, column)
     result_df.to_excel(path+file[:-5]+"_result.xlsx")
+    print(result_df)
     return(print("Finished"))
 
 
