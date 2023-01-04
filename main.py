@@ -16,19 +16,14 @@ def uniprotList(path, file, column):
 
 # function to get information from a list of accession numbers
 def get_all_info(ID_list):
-    info_dic = {} # dictionary does not work --> evtl. anders abspeichern! list zu namen in dic fuunktioniert nicth; "title": [] ist dafuer noetig
-    # anderer weg zum abspeichern der unterschiedlichen Infos finden
-    print(info_dic)
+    result_df = pd.DataFrame()
     for ID in ID_list:
-        print(import_xml(ID))
-        info_dic[ID].append = [import_xml(ID)]
-
-
-
-# test wie infos pro accession number abgespeichert werden koennen
-x = {"PEIGF": [], "Pdsfg": [], "Psdfg": []}
-x["PEIGF"].append(["0h65jk", 123])
-print(x)
+        # print(ID)
+        # print(import_xml(ID))
+        # adds all information gathered with import_xml to new column in result_df
+        result_df[ID] = pd.Series(import_xml(ID), name = ID)
+    # print(result_df)
+    return(result_df)
 
 
 # function to import xml data
@@ -43,6 +38,7 @@ def import_xml(accession_number):
     # Find the entry element
     entry_element = root.find('./{http://uniprot.org/uniprot}entry')
 
+    # extract certain information, for each own function
     gene_name = get_gene_name(entry_element)
     add_info = "dummy"
 
