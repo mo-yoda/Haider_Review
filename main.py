@@ -64,6 +64,11 @@ def get_species(entry_element):
         scientific_species = species.text
         return (scientific_species)
 
+### TODO:
+# ?? get GO terms (are a lot for one protein) -> see if there are online tools
+# get poss. catalytic activity -> ecNumber --> if its present, it is an enzyme
+# get Keywords (only "biological function")
+
 
 
 # function to export result, main function
