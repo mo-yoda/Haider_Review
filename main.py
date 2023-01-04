@@ -39,27 +39,20 @@ def import_xml(accession_number):
     root = ET.fromstring(xml_data)
 
     # Find the entry element
-    entry = root.find('./{http://uniprot.org/uniprot}entry')
+    entry = root.find(add_uniprot_url('./entry'))
 
-    # extract certain information, for each own function
-
-    gene_name = get_info(entry, './{http://uniprot.org/uniprot}gene/{http://uniprot.org/uniprot}name[@type="primary"]')
-    species = get_info(entry, './{http://uniprot.org/uniprot}organism/{http://uniprot.org/uniprot}name[@type="scientific"]')
-    ec_number = get_info(entry, './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber')
-
-    # gene_name = get_gene_name(entry)
-    # species = get_species(entry)
-    # ec_number = get_ec(entry)
+    # extract certain information, based on path to xml
+    gene_name = get_info(entry, add_uniprot_url('./gene/name[@type="primary"]'))
+    species = get_info(entry, add_uniprot_url('./organism/name[@type="scientific"]'))
+    ec_number = get_info(entry, add_uniprot_url('./protein/recommendedName/ecNumber'))
     add_info = "dummy"
-
 
     return ([gene_name, species, ec_number, add_info])
 
+# function to add "{http://uniprot.org/uniprot}" to xml paths
 def add_uniprot_url(path):
     long_path = path.replace("/", "/{http://uniprot.org/uniprot}")
     return(long_path)
-
-#print(add_uniprot_url('./gene/name/ecNumber'))
 
 
 # function to find gene_name in entry
