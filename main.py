@@ -1,7 +1,6 @@
-import requests
-import openpyxl
 import xml.etree.ElementTree as ET
 import pandas as pd
+import requests
 
 path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
 file = "access.xlsx"
@@ -64,17 +63,11 @@ def get_gene_name(entry_element):
 def export_xlsx(path, file, column):
     result_df = uniprotList(path, file, column)
     result_df.to_excel(path+file[:-5]+"_result.xlsx")
+    return(print("Finished"))
 
 
 
-# test
-test = uniprotList(path, file, column)
-#test.to_excel(path+file[:-5]+"_result.xlsx")
-print(test)
+
 
 #test2
-test2 = uniprotList(path, file, column)
-#test3 = test2.transpose()
-#test3 = test3.reset_index(level=0)
-#test3.columns = ["ID", "Gene Name", "dummy"]
-print(test3)
+export_xlsx(path, file, column)
