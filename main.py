@@ -36,6 +36,7 @@ def get_all_info(ID_list):
     result_df = result_df.reset_index(level=0)
     result_df.columns = ["ID",
                          "Gene Name",
+                         "Protein Name",
                          "Species",
                          "EC Number",
                          "Uniprot Keyword",
@@ -57,6 +58,7 @@ def import_xml(accession_number, kw_list=kw_list):
 
     # extract certain information, based on path to xml
     gene_name = get_info(entry, add_uniprot_url('./gene/name[@type="primary"]'))
+    protein_name = get_info(entry, add_uniprot_url('./protein/recommendedName/fullName'))
     species = get_info(entry, add_uniprot_url('./organism/name[@type="scientific"]'))
     ec_number = get_info(entry, add_uniprot_url('./protein/recommendedName/ecNumber'))
 
@@ -71,7 +73,7 @@ def import_xml(accession_number, kw_list=kw_list):
     keywords = keywords[2:len(keywords)]
 
     add_info = "dummy"
-    return ([gene_name, species, ec_number, keywords, add_info])
+    return ([gene_name, protein_name, species, ec_number, keywords, add_info])
 
 
 # function to add "{http://uniprot.org/uniprot}" to xml paths
