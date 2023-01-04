@@ -1,14 +1,33 @@
 import xml.etree.ElementTree as ET
 import pandas as pd
 import requests
+import gzip
+import io
 
 path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
 file = "access.xlsx"
 column = "ID"
 
+
 # selected keywords to extract (only ones in category biological process + molecular function)
-biol_processes = pd.read_csv(path + "uniprot_keywords_biological_process.tsv", sep='\t')
-mol_function = pd.read_csv(path + "uniprot_keywords_molecular_function.tsv", sep='\t')
+def get_rest_api(api_url):
+    call = requests.get(api_url, headers={'Accept-Encoding': 'gzip'})
+    # Check the response status code
+    if call.status_code == 200:
+        # Extract the content of the response
+        content = call.content
+        # Decompress the content using gzip
+        decompressed_content = gzip.decompress(content)
+        # Convert the decompressed content to a string
+        data = decompressed_content.decode('utf-8')
+        # string to dataframe
+        df = pd.read_csv(io.StringIO(data), sep="\t")
+        return df
+
+
+keyword_url = "https://rest.uniprot.org/keywords/stream?compressed=true&fields=id%2Cname%2Ccategory%2Cgene_ontologies&format=tsv&query=%28%2A%29%20AND%20%28category%3A"
+biol_processes = get_rest_api(keyword_url + "biological_process%29")
+mol_function = get_rest_api(keyword_url + "molecular_function%29")
 
 # join both dfs + export
 selected_keywords = pd.concat([biol_processes, mol_function])
@@ -97,7 +116,7 @@ def get_info(entry, xml_path):
     return extracted_info
 
 
-### TODO:
+# TODO:
 # ?? get GO terms (are a lot for one protein) -> see if there are online tools
 
 
