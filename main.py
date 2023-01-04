@@ -8,21 +8,25 @@ file = "access.xlsx"
 column = "ID"
 
 
-# function to import xlsx file with accession numbers
+# function to import xlsx file with accession numbers, returns all gathered infos
 def uniprotList(path, file, column):
     df = pd.read_excel(io=path + file, engine="openpyxl")
+    # list of accession numbers
     ID_list = df[column]
-    return (ID_list)
+    result_df = get_all_info(ID_list)
+    return (result_df)
 
 # function to get information from a list of accession numbers
 def get_all_info(ID_list):
     result_df = pd.DataFrame()
+    parameters = ["Gene Name", "dummy"]
     for ID in ID_list:
         # print(ID)
         # print(import_xml(ID))
         # adds all information gathered with import_xml to new column in result_df
         result_df[ID] = pd.Series(import_xml(ID), name = ID)
     # print(result_df)
+    # result_df.transpose
     return(result_df)
 
 
@@ -42,7 +46,7 @@ def import_xml(accession_number):
     gene_name = get_gene_name(entry_element)
     add_info = "dummy"
 
-    return ([gene_name, add_info])
+    return([gene_name, add_info])
 
 
 # function to find gene_name in entry
@@ -52,15 +56,17 @@ def get_gene_name(entry_element):
         primary_gene_name = name.text
         return (primary_gene_name)
 
-# Test the function
-# accession_number = "P49407"
-# test = import_xml(accession_number)
 
-# print(test)
+
+# function to export result, main function
+def export_xlsx(path, file, column):
+    result_df = uniprotList(path, file, column)
+    result_df.to_excel(path+file[:-5]+"_result.xlsx")
+
 
 
 # test
-ID_list = uniprotList(path, file, column)
-test2 = get_all_info(ID_list)
-print(test2)
+test = uniprotList(path, file, column)
+test.to_excel(path+file[:-5]+"_result.xlsx")
+print(test)
 
