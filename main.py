@@ -21,13 +21,14 @@ def get_all_info(ID_list):
     result_df = pd.DataFrame()
     parameters = ["Gene Name", "dummy"]
     for ID in ID_list:
-        # print(ID)
-        # print(import_xml(ID))
         # adds all information gathered with import_xml to new column in result_df
         result_df[ID] = pd.Series(import_xml(ID), name = ID)
-    # print(result_df)
-    # result_df.transpose
+    # transpose df -> row per accession number and add column titels
+    result_df.transpose()
+    result_df = result_df.reset_index(level=0)
+    result_df.columns = ["ID", "Gene Name", "dummy"] ### !!! edit this according to extracted info!
     return(result_df)
+
 
 
 # function to import xml data
@@ -67,6 +68,12 @@ def export_xlsx(path, file, column):
 
 # test
 test = uniprotList(path, file, column)
-test.to_excel(path+file[:-5]+"_result.xlsx")
+#test.to_excel(path+file[:-5]+"_result.xlsx")
 print(test)
 
+#test2
+test2 = uniprotList(path, file, column)
+test3 = test2.transpose()
+test3 = test3.reset_index(level=0)
+test3.columns = ["ID", "Gene Name", "dummy"]
+print(test3)
