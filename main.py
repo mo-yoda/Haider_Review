@@ -55,52 +55,6 @@ def add_uniprot_url(path):
     return(long_path)
 
 
-# function to find gene_name in entry
-def get_gene_name(entry):
-    for name in entry.findall(
-            './{http://uniprot.org/uniprot}gene/{http://uniprot.org/uniprot}name[@type="primary"]'):
-        primary_gene_name = name.text
-        return (primary_gene_name)
-
-
-# function to find species in entry
-def get_species(entry):
-    for species in entry.findall(
-            './{http://uniprot.org/uniprot}organism/{http://uniprot.org/uniprot}name[@type="scientific"]'):
-        scientific_species = species.text
-        return (scientific_species)
-
-
-# function to find EC number in entry
-def get_ec(entry):
-    # if there is no entry, e.g. no ecNumber since protein is not an enzyme
-    ec_number = 0
-    if not entry.findall(
-            './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
-        print("no ec")
-        ec_number = ["NA"]
-    else:
-        for ec in entry.findall(
-                './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
-            print(ec.text)
-            ec_number = ec.text
-    return ec_number
-
-# function to find EC number in entry
-def get_ec(entry):
-    # if there is no entry, e.g. no ecNumber since protein is not an enzyme
-    if not entry.findall(
-            './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
-        print("no ec")
-        ec_number = ["NA"]
-    else:
-        for ec in entry.findall(
-                './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
-            print(ec.text)
-            ec_number = ec.text
-    return ec_number
-
-
 # general function to get info from uniprot entry based to the given path
 def get_info(entry, path):
     # if there is no entry, e.g. no ecNumber since protein is not an enzyme
@@ -117,7 +71,6 @@ def get_info(entry, path):
 
 ### TODO:
 # ?? get GO terms (are a lot for one protein) -> see if there are online tools
-# get poss. catalytic activity -> ecNumber --> if its present, it is an enzyme
 # get Keywords (only "biological function")
 
 
