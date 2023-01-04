@@ -6,6 +6,15 @@ path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 i
 file = "access.xlsx"
 column = "ID"
 
+# selected keywords to extract (only ones in category biological process + molecular function)
+biol_processes = pd.read_csv(path + "uniprot_keywords_biological_process.tsv", sep='\t')
+mol_function = pd.read_csv(path + "uniprot_keywords_molecular_function.tsv", sep='\t')
+# join both dfs + export
+selected_keywords = pd.concat([biol_processes, mol_function])
+selected_keywords.to_excel(path + "selected_keywords.xlsx")
+# create list with Keyword IDs
+kw_list = selected_keywords["Keyword ID"]
+
 
 # function to import xlsx file with accession numbers, returns all gathered infos
 def uniprotList(path, file, column):
@@ -25,12 +34,17 @@ def get_all_info(ID_list):
     # transpose df -> row per accession number and add column titels
     result_df = result_df.transpose()
     result_df = result_df.reset_index(level=0)
-    result_df.columns = ["ID", "Gene Name", "Species", "EC Number", "dummy"]  ### !!! edit this according to extracted info!
+    result_df.columns = ["ID",
+                         "Gene Name",
+                         "Species",
+                         "EC Number",
+                         "Uniprot Keyword",
+                         "dummy"]  ### !!! edit this according to extracted info!
     return (result_df)
 
 
 # function to import xml data
-def import_xml(accession_number):
+def import_xml(accession_number, kw_list=kw_list):
     url = "https://www.uniprot.org/uniprot/" + accession_number + ".xml"
     r = requests.get(url)
     xml_data = r.text
@@ -45,9 +59,20 @@ def import_xml(accession_number):
     gene_name = get_info(entry, add_uniprot_url('./gene/name[@type="primary"]'))
     species = get_info(entry, add_uniprot_url('./organism/name[@type="scientific"]'))
     ec_number = get_info(entry, add_uniprot_url('./protein/recommendedName/ecNumber'))
-    add_info = "dummy"
 
-    return ([gene_name, species, ec_number, add_info])
+    # several keywords for each entry
+    keywords = str()
+    for key in kw_list: # extract only relevant ones according to kw_list
+        temp = get_info(entry, add_uniprot_url('./keyword[@id="' + key + '"]'))
+        # if there is an entry, add string to keywords
+        if not pd.isna(temp):
+            keywords = keywords + ", " + temp
+    # remove first ", "
+    keywords = keywords[2:len(keywords)]
+
+    add_info = "dummy"
+    return ([gene_name, species, ec_number, keywords, add_info])
+
 
 # function to add "{http://uniprot.org/uniprot}" to xml paths
 def add_uniprot_url(path):
@@ -59,11 +84,11 @@ def add_uniprot_url(path):
 def get_info(entry, path):
     # if there is no entry, e.g. no ecNumber since protein is not an enzyme
     if not entry.findall(path):
-        print("no attribute found")
-        extracted_info = ["NA"]
+        # print("no attribute found")
+        extracted_info = float("NaN")
     else:
         for info in entry.findall(path):
-            print(info.text)
+            #print(info.text)
             extracted_info = info.text
     return extracted_info
 
@@ -71,7 +96,7 @@ def get_info(entry, path):
 
 ### TODO:
 # ?? get GO terms (are a lot for one protein) -> see if there are online tools
-# get Keywords (only "biological function")
+
 
 
 # function to export result, main function
@@ -84,3 +109,4 @@ def export_xlsx(path, file, column):
 
 # test2
 export_xlsx(path, file, column)
+
