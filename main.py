@@ -116,17 +116,19 @@ def get_info(entry, xml_path):
     return extracted_info
 
 
-# TODO:
-# ?? get GO terms (are a lot for one protein) -> see if there are online tools
+# function to extract all rows containing a specific value in a specific column
+def extract_rows(df, column, value):
+  return df[(df[column].notnull()) & (df[column].str.contains(value))]
 
 
 # function to export result, main function
 def export_xlsx(path_to_folder, filename, column_name):
     result_df = uniprotlist(path_to_folder, filename, column_name)
+    # # split table into GPCR and non-GPCR proteins
+    # gpcr_df = extract_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
     result_df.to_excel(path_to_folder + filename[:-5] + "_result.xlsx")
-    print(result_df)
     return print("Finished")
 
 
-# test2
+# execute
 export_xlsx(path, file, column)
