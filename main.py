@@ -39,47 +39,86 @@ def import_xml(accession_number):
     root = ET.fromstring(xml_data)
 
     # Find the entry element
-    entry_element = root.find('./{http://uniprot.org/uniprot}entry')
+    entry = root.find('./{http://uniprot.org/uniprot}entry')
 
     # extract certain information, for each own function
-    gene_name = get_gene_name(entry_element)
-    species = get_species(entry_element)
-    ec_number = get_ec(entry_element)
+
+    gene_name = get_info(entry, './{http://uniprot.org/uniprot}gene/{http://uniprot.org/uniprot}name[@type="primary"]')
+    species = get_info(entry, './{http://uniprot.org/uniprot}organism/{http://uniprot.org/uniprot}name[@type="scientific"]')
+    ec_number = get_info(entry, './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber')
+
+    # gene_name = get_gene_name(entry)
+    # species = get_species(entry)
+    # ec_number = get_ec(entry)
     add_info = "dummy"
+
 
     return ([gene_name, species, ec_number, add_info])
 
+def add_uniprot_url(path):
+    long_path = path.replace("/", "/{http://uniprot.org/uniprot}")
+    return(long_path)
+
+#print(add_uniprot_url('./gene/name/ecNumber'))
+
 
 # function to find gene_name in entry
-def get_gene_name(entry_element):
-    for name in entry_element.findall(
+def get_gene_name(entry):
+    for name in entry.findall(
             './{http://uniprot.org/uniprot}gene/{http://uniprot.org/uniprot}name[@type="primary"]'):
         primary_gene_name = name.text
         return (primary_gene_name)
 
 
 # function to find species in entry
-def get_species(entry_element):
-    for species in entry_element.findall(
+def get_species(entry):
+    for species in entry.findall(
             './{http://uniprot.org/uniprot}organism/{http://uniprot.org/uniprot}name[@type="scientific"]'):
         scientific_species = species.text
         return (scientific_species)
 
 
 # function to find EC number in entry
-def get_ec(entry_element):
+def get_ec(entry):
     # if there is no entry, e.g. no ecNumber since protein is not an enzyme
     ec_number = 0
-    if not entry_element.findall(
+    if not entry.findall(
             './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
         print("no ec")
         ec_number = ["NA"]
     else:
-        for ec in entry_element.findall(
+        for ec in entry.findall(
                 './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
             print(ec.text)
             ec_number = ec.text
     return ec_number
+
+# function to find EC number in entry
+def get_ec(entry):
+    # if there is no entry, e.g. no ecNumber since protein is not an enzyme
+    if not entry.findall(
+            './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
+        print("no ec")
+        ec_number = ["NA"]
+    else:
+        for ec in entry.findall(
+                './{http://uniprot.org/uniprot}protein/{http://uniprot.org/uniprot}recommendedName/{http://uniprot.org/uniprot}ecNumber'):
+            print(ec.text)
+            ec_number = ec.text
+    return ec_number
+
+
+# general function to get info from uniprot entry based to the given path
+def get_info(entry, path):
+    # if there is no entry, e.g. no ecNumber since protein is not an enzyme
+    if not entry.findall(path):
+        print("no attribute found")
+        extracted_info = ["NA"]
+    else:
+        for info in entry.findall(path):
+            print(info.text)
+            extracted_info = info.text
+    return extracted_info
 
 
 
