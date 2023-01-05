@@ -118,7 +118,7 @@ def get_info(entry, xml_path):
 
 # function to extract all rows containing a specific value in a specific column
 def extract_rows(df, column, value):
-  return df[(df[column].notnull()) & (df[column].str.contains(value))]
+    return df[(df[column].notnull()) & (df[column].str.contains(value))]
 
 
 # function to export result, main function
