@@ -28,6 +28,7 @@ def get_rest_api(api_url):
         return df
 
 # keyword API from uniprot
+print("Getting Keywords from Uniprot ...")
 keyword_url = "https://rest.uniprot.org/keywords/stream?compressed=true&fields=id%2Cname%2Ccategory%2Cgene_ontologies&format=tsv&query=%28%2A%29%20AND%20%28category%3A"
 biol_processes = get_rest_api(keyword_url + "biological_process%29")
 mol_function = get_rest_api(keyword_url + "molecular_function%29")
@@ -42,6 +43,7 @@ kw_list = selected_keywords["Keyword ID"]
 
 # function to import xlsx file with accession numbers, returns all gathered infos
 def uniprotlist(path_to_folder, filename, column_name):
+    print("Gathering info from Uniprot ...")
     df = pd.read_excel(io=path_to_folder + filename, engine="openpyxl")
     # list of accession numbers
     id_list = df[column_name]
@@ -53,9 +55,10 @@ def uniprotlist(path_to_folder, filename, column_name):
 def get_all_info(id_list):
     result_df = pd.DataFrame()
     for ID in id_list:
+        print(ID)
         # adds all information gathered with import_xml to new column in result_df
         result_df[ID] = pd.Series(import_xml(ID), name=ID)
-    # transpose df -> row per accession number and add column titels
+    # transpose df -> row per accession number and add column titles
     result_df = result_df.transpose()
     result_df = result_df.reset_index(level=0)
     result_df.columns = ["ID",
@@ -130,6 +133,7 @@ def remove_rows(df, column, value):
 # function to export result, main function
 def export_xlsx(path_to_folder, filename, column_name):
     result_df = uniprotlist(path_to_folder, filename, column_name)
+    print("Saving results ...")
     # split table into GPCR and non-GPCR proteins
     gpcr_df = extract_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
     nogpcr_df = remove_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
