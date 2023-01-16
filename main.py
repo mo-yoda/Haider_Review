@@ -4,7 +4,10 @@ import requests
 import gzip
 import io
 
-path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
+# homeoffice path
+# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
+# IMZ path
+path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/python_test/'
 file = "access.xlsx"
 column = "ID"
 
@@ -24,7 +27,7 @@ def get_rest_api(api_url):
         df = pd.read_csv(io.StringIO(data), sep="\t")
         return df
 
-
+# keyword API from uniprot
 keyword_url = "https://rest.uniprot.org/keywords/stream?compressed=true&fields=id%2Cname%2Ccategory%2Cgene_ontologies&format=tsv&query=%28%2A%29%20AND%20%28category%3A"
 biol_processes = get_rest_api(keyword_url + "biological_process%29")
 mol_function = get_rest_api(keyword_url + "molecular_function%29")
@@ -65,7 +68,7 @@ def get_all_info(id_list):
     return result_df
 
 
-# function to import xml data
+# function to import xml data for each accession number
 def import_xml(accession_number, keyword_list=kw_list):
     url = "https://www.uniprot.org/uniprot/" + accession_number + ".xml"
     r = requests.get(url)
@@ -103,7 +106,7 @@ def add_uniprot_url(xml_path):
     return long_path
 
 
-# general function to get info from uniprot entry based to the given path
+# general function to get info from uniprot entry based on the given path
 def get_info(entry, xml_path):
     # if there is no entry, e.g. no ecNumber since protein is not an enzyme
     if not entry.findall(xml_path):
@@ -116,7 +119,7 @@ def get_info(entry, xml_path):
     return extracted_info
 
 
-# function to extract all rows containing a specific value in a specific column
+# function to extract all rows containing a specific value in a specific column, used to identify GPCRs
 def extract_rows(df, column, value):
     return df[(df[column].notnull()) & (df[column].str.contains(value))]
 
