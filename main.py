@@ -123,13 +123,20 @@ def get_info(entry, xml_path):
 def extract_rows(df, column, value):
     return df[(df[column].notnull()) & (df[column].str.contains(value))]
 
+# removes rows from df when one of the values are found in specific column, used to remove GPCRs from "all"
+def remove_rows(df, column, value):
+    return df[(df[column].notnull()) & (df[column].str.contains(value)==False)]
 
 # function to export result, main function
 def export_xlsx(path_to_folder, filename, column_name):
     result_df = uniprotlist(path_to_folder, filename, column_name)
-    # # split table into GPCR and non-GPCR proteins
-    # gpcr_df = extract_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
-    result_df.to_excel(path_to_folder + filename[:-5] + "_result.xlsx")
+    # split table into GPCR and non-GPCR proteins
+    gpcr_df = extract_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
+    nogpcr_df = remove_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
+
+    result_df.to_excel(path_to_folder + filename[:-5] + "_all.xlsx")
+    gpcr_df.to_excel(path_to_folder + filename[:-5] + "_gpcrs.xlsx")
+    nogpcr_df.to_excel(path_to_folder + filename[:-5] + "_nogpcrs.xlsx")
     return print("Finished")
 
 
