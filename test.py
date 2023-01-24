@@ -25,5 +25,14 @@ import requests
 # test running .R in python
 import subprocess
 
-res = subprocess.call("C:/Users/M02847/AppData/Local/Programs/R/R-4.2.1/bin/Rscript.exe /Users/M02847/Desktop/test.R", shell=True)
-res
+path_Rscript = "C:/Users/M02847/AppData/Local/Programs/R/R-4.2.1/bin/Rscript.exe"
+path_R_file = "/Users/M02847/Desktop/test.R"
+input = "/Users/M02847/Desktop/test.xlsx"
+
+cmd = path_Rscript + " " + path_R_file + " " + input
+print(cmd)
+# res = subprocess.call("C:/Users/M02847/AppData/Local/Programs/R/R-4.2.1/bin/Rscript.exe /Users/M02847/Desktop/test.R", shell=True)
+# res
+
+test = subprocess.call(cmd, shell=True)
+test
