@@ -8,6 +8,16 @@ lapply(wants, require, character.only = TRUE)
 # path <- 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
 # IMZ path
 path <- 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/'
-# files to
 
-df <- read.csv()
+# continue here! unfinished script
+
+
+
+### following works --> write in beautiful
+library(OmnipathR)
+
+# ACHTUNG here erst ab ENSP als input, dann gehts!!!
+c <- data.frame(ensp = c('ENSP00000409581', 'ENSP00000403701'))
+
+e <- translate_ids(c, ensp = ensp, uniprot)
+e
