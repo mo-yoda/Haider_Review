@@ -29,25 +29,26 @@ my_genes = ["9606.ENSP00000409581", "9606.ENSP00000403701"]
 # built request api
 # https://string-db.org/api/[output-format]/interaction_partners?identifiers=[your_identifiers]&[optional_parameters]
 request_url = "/".join([string_api_url, output_format, method])
+print(request_url)
 
+# set parameters for request
+params = {
+    "identifiers" : "%0d".join(my_genes),
+    "species" : 9606, # species NCBI identifier for human
+    "limit" : 1000, # limits the number of interaction proteins retrieved per protein
+    "caller_identity" : "Mona" # my identifier for stringDB
+}
 
+# call STRING request
+response = requests.post(request_url, data = params)
 
-
-
-
-# # selected keywords to extract (only ones in category biological process + molecular function)
-# def get_rest_api(api_url):
-#     call = requests.get(api_url, headers={'Accept-Encoding': 'gzip'})
-#     # Check the response status code
-#     if call.status_code == 200:
-#         # Extract the content of the response
-#         content = call.content
-#         # Decompress the content using gzip
-#         decompressed_content = gzip.decompress(content)
-#         # Convert the decompressed content to a string
-#         data = decompressed_content.decode('utf-8')
-#         # string to dataframe
-#         df = pd.read_csv(io.StringIO(data), sep="\t")
-#         return df
-#
+# Read and parse the results
+for line in response.text.strip().split("\n"):
+    l = line.strip().split("\t")
+    query_ensp = l[0]
+    query_name = l[2]
+    partner_ensp = l[1]
+    partner_name = l[3]
+    combined_score = l[5]
+    print("\t".join([query_ensp, query_name, partner_name, combined_score]))
 
