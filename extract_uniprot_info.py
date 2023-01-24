@@ -149,6 +149,4 @@ export_xlsx(path, file, column)
 
 
 # TODO
-# GO term selection + get these selected GO terms for interacton partners
-# create xlsx export table with these GO terms to be able to plot or cluster GO terms
-# this table with columns: interacting protein, bArr1 or 2, GO term
+# add ENSP ID export to get_info()
