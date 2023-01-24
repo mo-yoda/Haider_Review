@@ -22,14 +22,8 @@ import requests
 # print(gene_name)
 
 
-## test IdMappingClient
-from unipressed import IdMappingClient
-import time
+# test running .R in python
+import subprocess
 
-request = IdMappingClient.submit(
-     source="UniProtKB_AC-ID", dest="Gene_Name", ids={"A1L190"}
- )
-time.sleep(1)
-print(list(request.each_result()))
-
-# which string for "source" is correct for ENSP?!
+res = subprocess.call("C:/Users/M02847/AppData/Local/Programs/R/R-4.2.1/bin/Rscript.exe /Users/M02847/Desktop/test.R", shell=True)
+res
