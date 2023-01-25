@@ -60,15 +60,9 @@ for line in response.text.strip().split("\n"):
 # string to dataframe
 df = pd.read_csv(io.StringIO(data_string), sep="\t")
 
-df.to_excel(path + "test.xlsx")
+df.to_excel(path + "interactors_stringDB.xlsx")
 
 ##  about the combined_score
 # The combined score is computed by combining the probabilities from the different evidence channels and
 # corrected for the probability of randomly observing an interaction. For a more detailed description please
 # see von Mering, et al. Nucleic Acids Res. 2005
-
-# TODO
-# generally, recode with functions
-# add function to export bArr1, bArr2 interaction proteins separately
-# add function to separate unique vs non-unique interaction proteins
-# -> add factor as column + export in separate sheets of one xlsx
