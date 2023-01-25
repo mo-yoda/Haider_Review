@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import requests
 import io
@@ -59,8 +60,8 @@ for line in response.text.strip().split("\n"):
 
 # string to dataframe
 df = pd.read_csv(io.StringIO(data_string), sep="\t")
-
-df.to_excel(path + "interactors_stringDB.xlsx")
+os.mkdir(path + "/OG_stringDB_data/")
+df.to_excel(path + "/OG_stringDB_data/" + "interactors_stringDB.xlsx")
 
 ##  about the combined_score
 # The combined score is computed by combining the probabilities from the different evidence channels and
