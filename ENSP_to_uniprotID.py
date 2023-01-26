@@ -184,7 +184,6 @@ def get_ENSP_IDs(path_to_xlsx, xlsx):
     ENSP_IDs = df['stringId_B']
     return(ENSP_IDs.tolist())
 
-print(get_ENSP_IDs(path,filenames[0]))
 
 def get_ID_from_mapping_API(id_list):
     # get 500 IDs at a time!
@@ -231,6 +230,7 @@ filenames = glob.glob('*.{}'.format(extension))
 df = pd.read_excel(path + filenames[3])
 ENSP_IDs = df['stringId_B']
 
+print(get_ENSP_IDs(path,filenames[0]))
 
 print(filenames[3])
 print(get_ID_from_mapping_API(ENSP_IDs))
