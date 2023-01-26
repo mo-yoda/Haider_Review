@@ -44,3 +44,21 @@ for (dataset in names(df_list)){
 for (dataset in names(result_list)){
   write.xlsx(result_list[[dataset]], paste0(path, "/uniprot_ID/", dataset, "_ID.xlsx"))
 }
+
+# unclear why some ENSP cannot be translated to uniprot IDs
+
+# example where id is missing: 9606.ENSP00000351805	AVPR2
+# it works with: 9606.ENSP00000337383	NLRP3
+x <- data.frame("ensp" = c("ENSP00000351805", "ENSP00000337383"))
+translate_ids(x, ensp = ensp, hgnc, uploadlists = TRUE)
+uniprot_full_id_mapping_table(uniprot, ensg)
+
+# at least get indices of non-assigned ENSP -> to many to assign manually
+which(is.na(result_list[[1]]$uniprot))
+
+y <- data.frame(protein_name = c("AVPR2", "NLRP3"))
+
+translate_ids(y, protein_name = protein_name, id)
+
+# USE uniprot maaping tool, is there API access?
+# STRING has to be selected as input! -> only then, ENSP is specific!
