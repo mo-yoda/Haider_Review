@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import gzip
 import io
+import os
 
 # homeoffice path
 # path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
