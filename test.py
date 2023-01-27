@@ -37,6 +37,5 @@ import requests
 # test = subprocess.call(cmd, shell=True)
 # test
 
-print(range(3))
-for i in range(3):
-    print(i)
+x = "hello"
+print(x[0:len(x)-2])

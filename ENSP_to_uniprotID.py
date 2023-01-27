@@ -9,7 +9,9 @@ from xml.etree import ElementTree
 from urllib.parse import urlparse, parse_qs, urlencode
 import requests
 from requests.adapters import HTTPAdapter, Retry
+import pandas as pd
 
+## this is adapted from https://www.uniprot.org/help/id_mapping exmaple
 
 POLLING_INTERVAL = 3
 API_URL = "https://rest.uniprot.org"
@@ -18,7 +20,6 @@ API_URL = "https://rest.uniprot.org"
 retries = Retry(total=5, backoff_factor=0.25, status_forcelist=[500, 502, 503, 504])
 session = requests.Session()
 session.mount("https://", HTTPAdapter(max_retries=retries))
-
 
 def check_response(response):
     try:
@@ -173,11 +174,6 @@ def get_id_mapping_results_stream(url):
     )
     return decode_results(request, file_format, compressed)
 
-## this is adapted from https://www.uniprot.org/help/id_mapping exmaple
-
-# import IDs
-import pandas as pd
-
 
 def get_ENSP_IDs(path_to_xlsx, xlsx):
     df = pd.read_excel(path_to_xlsx + xlsx)
@@ -186,16 +182,28 @@ def get_ENSP_IDs(path_to_xlsx, xlsx):
 
 
 def get_ID_from_mapping_API(id_list):
-    # get 500 IDs at a time!
     result = []
     runs_needed = math.ceil(len(id_list)/500)
     ids_left = len(id_list)
+    print("total ids to aquire " + str(len(id_list)))
+    print("will take " + str(runs_needed) + " runs")
 
     for run in range(runs_needed):
-        ids_left = ids_left-500
-        if ids_left < 0: ids_left = 0
+        # max 500 IDs at a time!
+        if run == 0:
+            limit = 500
+        else:
+            limit = n_fetched
+        ids_left = ids_left-limit
+        if ids_left < 0:
+            ids_left = 0
+        print("--------------")
+        print("run " + str(run))
+        print("get IDs in rows " + str(len(result)))
+        print("to " + str(len(id_list)-ids_left))
+        # print("current query limit is " + str(limit))
 
-        ids_subset = id_list[run*500: len(id_list)-ids_left]
+        ids_subset = id_list[len(result): (len(id_list)-ids_left)]
 
         job_id = submit_id_mapping(
             from_db="STRING", to_db="UniProtKB", ids=ids_subset
@@ -204,17 +212,18 @@ def get_ID_from_mapping_API(id_list):
             link = get_id_mapping_results_link(job_id)
             uni_entries = get_id_mapping_results_search(link)
 
-            print("hEEEERE")
-            print(len(ids_subset))
+            n_fetched = len(uni_entries['results'])
+            # print("ids fetched " + str(n_fetched))
+            print("ids left after this run " + str(ids_left))
+            print("#################")
 
-            for i in range(len(ids_subset)):
-                # print(i)
-                # print(uni_entries['results'][i]['to']['primaryAccession'])
+            for i in range(len(uni_entries['results'])):
                 result += [uni_entries['results'][i]['to']['primaryAccession']]
     return(result)
 
 
-# import interactors retrieved from strinDB via get_stringDB.py
+### import interactors retrieved from strinDB via get_stringDB.py
+
 # homeoffice path
 # path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
 # IMZ path
@@ -224,48 +233,16 @@ extension = 'xlsx'
 os.chdir(path)
 filenames = glob.glob('*.{}'.format(extension))
 
+# run with every xlsx created by get_stringDB.py
+for file in filenames:
+    df = pd.read_excel(path + filenames[3])
+    ENSP_IDs = df['stringId_B']
+    print("Getting IDs for " + str(file))
 
-# ODER
-# for each xlsx sheet in dilenames
-df = pd.read_excel(path + filenames[3])
-ENSP_IDs = df['stringId_B']
+    temp_results = get_ID_from_mapping_API(ENSP_IDs)
+    # save results in a new column of df
+    col_results = pd.Series(temp_results)
+    df['uniprot_ID_proteinB'] = temp_results
+    # export df
+    df.to_excel(path + "/uniprot_ID/" + file[0:len(file)-5] + "_ID.xlsx")
 
-print(get_ENSP_IDs(path,filenames[0]))
-
-print(filenames[3])
-print(get_ID_from_mapping_API(ENSP_IDs))
-
-
-
-
-####
-
-# job_id = submit_id_mapping(
-#     from_db="STRING", to_db="UniProtKB", ids=["9606.ENSP00000351805", "9606.ENSP00000337383"]
-# )
-# if check_id_mapping_results_ready(job_id):
-#     link = get_id_mapping_results_link(job_id)
-#     results = get_id_mapping_results_search(link)
-#     # Equivalently using the stream endpoint which is more demanding
-#     # on the API and so is less stable:
-#     # results = get_id_mapping_results_stream(link)
-
-
-
-# from "STRING" to "UniProtKB_AC-ID" was not valid
-# "UniProtKB" returns entire entry; thus script retrieves only ACC ID in entry
-# results are nested dictionary
-
-
-# print(type(results))
-# # print(results['results']['from']) #does not work
-#
-# # this is a list
-# test1 = results['results']
-# print(type(test1))
-# print(test1[0]['to']['primaryAccession'])
-#
-# # i is index of ID
-# i = 0
-# print(results['results'][i]['to']['primaryAccession'])
-#
