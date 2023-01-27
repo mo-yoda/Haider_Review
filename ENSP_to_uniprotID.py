@@ -187,6 +187,9 @@ def get_ID_from_mapping_API(id_list):
     ids_left = len(id_list)
     print("total ids to aquire " + str(len(id_list)))
     print("will take " + str(runs_needed) + " runs")
+    # change here!
+    # while ids_left > 0:
+    # + add that "run" is counting
 
     for run in range(runs_needed):
         # max 500 IDs at a time!
@@ -235,7 +238,7 @@ filenames = glob.glob('*.{}'.format(extension))
 
 # run with every xlsx created by get_stringDB.py
 for file in filenames:
-    df = pd.read_excel(path + filenames[3])
+    df = pd.read_excel(path + file)
     ENSP_IDs = df['stringId_B']
     print("Getting IDs for " + str(file))
 
