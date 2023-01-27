@@ -7,9 +7,9 @@ import io
 # homeoffice path
 # path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
 # IMZ path
-path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/python_test/'
-file = "access.xlsx"
-column = "ID"
+path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
+file = "all_interactors_ID.xlsx"
+column = "uniprot_ID_proteinB"
 
 
 # selected keywords to extract (only ones in category biological process + molecular function)
@@ -57,7 +57,9 @@ def get_all_info(id_list):
     for ID in id_list:
         print(ID)
         # adds all information gathered with import_xml to new column in result_df
-        result_df[ID] = pd.Series(import_xml(ID), name=ID)
+        # following line did work for small datasets, but gave performance warning for large dataset
+        # result_df[ID] = pd.Series(import_xml(ID), name=ID)
+        result_df = pd.concat((result_df, pd.Series(import_xml(ID), name=ID)), axis=1)
     # transpose df -> row per accession number and add column titles
     result_df = result_df.transpose()
     result_df = result_df.reset_index(level=0)
@@ -138,9 +140,11 @@ def export_xlsx(path_to_folder, filename, column_name):
     gpcr_df = extract_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
     nogpcr_df = remove_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
 
-    result_df.to_excel(path_to_folder + filename[:-5] + "_all.xlsx")
-    gpcr_df.to_excel(path_to_folder + filename[:-5] + "_gpcrs.xlsx")
-    nogpcr_df.to_excel(path_to_folder + filename[:-5] + "_nogpcrs.xlsx")
+    new_folder = "/uniprot_info/"
+    os.mkdir(path + new_folder)
+    result_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_all.xlsx")
+    gpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_gpcrs.xlsx")
+    nogpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_nogpcrs.xlsx")
     return print("Finished")
 
 
