@@ -9,7 +9,7 @@ import os
 # path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
 # IMZ path
 path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
-file = "all_interactors_ID.xlsx"
+file = "ARRB1_interactors_ID.xlsx"
 column = "uniprot_ID_proteinB"
 
 
@@ -142,7 +142,7 @@ def export_xlsx(path_to_folder, filename, column_name):
     nogpcr_df = remove_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
 
     new_folder = "/uniprot_info/"
-    os.mkdir(path + new_folder)
+    # os.mkdir(path + new_folder)
     result_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_all.xlsx")
     gpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_gpcrs.xlsx")
     nogpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_nogpcrs.xlsx")
