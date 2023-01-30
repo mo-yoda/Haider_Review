@@ -183,45 +183,56 @@ def get_ENSP_IDs(path_to_xlsx, xlsx):
 
 def get_ID_from_mapping_API(id_list):
     result = []
-    runs_needed = math.ceil(len(id_list)/500)
     ids_left = len(id_list)
+    print("#################")
     print("total ids to aquire " + str(len(id_list)))
-    print("will take " + str(runs_needed) + " runs")
-    # change here!
-    # while ids_left > 0:
-    # + add that "run" is counting
 
-    for run in range(runs_needed):
-        # max 500 IDs at a time!
+    run = 0
+    while ids_left > 0:
         if run == 0:
-            limit = 500
+            print("starting first query ...")
+            job_id = submit_id_mapping(
+                from_db="STRING", to_db="UniProtKB", ids=id_list
+            )
+            if check_id_mapping_results_ready(job_id):
+                link = get_id_mapping_results_link(job_id)
+                uni_entries = get_id_mapping_results_search(link)
+
+                n_fetched = len(uni_entries['results'])
+                print("total ids fetched " + str(n_fetched))
+
+                ids_left = ids_left - n_fetched
+                print("ids left after this run " + str(ids_left))
+                print("-----------------")
+
+                run += 1
+
+                for i in range(len(uni_entries['results'])):
+                    result += [uni_entries['results'][i]['to']['primaryAccession']]
         else:
-            limit = n_fetched
-        ids_left = ids_left-limit
-        if ids_left < 0:
-            ids_left = 0
-        print("--------------")
-        print("run " + str(run))
-        print("get IDs in rows " + str(len(result)))
-        print("to " + str(len(id_list)-ids_left))
-        # print("current query limit is " + str(limit))
+            print("starting next query ...")
 
-        ids_subset = id_list[len(result): (len(id_list)-ids_left)]
+            # create id_subset removing already fetched entries
+            ids_subset = id_list[len(result):len(id_list)]
 
-        job_id = submit_id_mapping(
-            from_db="STRING", to_db="UniProtKB", ids=ids_subset
-        )
-        if check_id_mapping_results_ready(job_id):
-            link = get_id_mapping_results_link(job_id)
-            uni_entries = get_id_mapping_results_search(link)
+            job_id = submit_id_mapping(
+                from_db="STRING", to_db="UniProtKB", ids=ids_subset
+            )
+            if check_id_mapping_results_ready(job_id):
+                link = get_id_mapping_results_link(job_id)
+                uni_entries = get_id_mapping_results_search(link)
 
-            n_fetched = len(uni_entries['results'])
-            # print("ids fetched " + str(n_fetched))
-            print("ids left after this run " + str(ids_left))
-            print("#################")
+                n_fetched = len(uni_entries['results'])
+                print("total ids fetched " + str(n_fetched))
 
-            for i in range(len(uni_entries['results'])):
-                result += [uni_entries['results'][i]['to']['primaryAccession']]
+                ids_left = ids_left - n_fetched
+                print("ids left after this run " + str(ids_left))
+                print("#################")
+
+                run += 1
+
+                for i in range(len(uni_entries['results'])):
+                    result += [uni_entries['results'][i]['to']['primaryAccession']]
     return(result)
 
 
