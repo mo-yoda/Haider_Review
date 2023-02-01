@@ -37,11 +37,20 @@ import requests
 # test = subprocess.call(cmd, shell=True)
 # test
 
-# test creating dir, if dir is not there
-import os
-path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
-try:
-    os.mkdir(path + "/OG_stringDB_data/")
-except FileExistsError:
-    print("already there")
-    pass
+# # test creating dir, if dir is not there
+# import os
+# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
+# try:
+#     os.mkdir(path + "/OG_stringDB_data/")
+# except FileExistsError:
+#     print("already there")
+#     pass
+import xlrd
+xlrd.xlsx.ensure_elementtree_imported(False, None)
+xlrd.xlsx.Element_has_iter = True
+
+import pandas as pd
+# homeoffice path
+path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+df = pd.read_excel(path + "interactors_stringDB.xlsx")
+print(df)
