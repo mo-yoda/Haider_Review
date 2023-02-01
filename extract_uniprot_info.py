@@ -142,8 +142,10 @@ def export_xlsx(path_to_folder, filename, column_name):
     gpcr_df = extract_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
     nogpcr_df = remove_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
 
-    new_folder = "/uniprot_info/"
-    # os.mkdir(path + new_folder)
+    try:
+        os.mkdir(path + new_folder)
+    except FileExistsError:
+        pass
     result_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_all.xlsx")
     gpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_gpcrs.xlsx")
     nogpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_nogpcrs.xlsx")
