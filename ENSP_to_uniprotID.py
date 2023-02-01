@@ -11,6 +11,7 @@ import requests
 from requests.adapters import HTTPAdapter, Retry
 import pandas as pd
 import xlrd
+
 # following two lines needed to prevent error when importing xlsx using pd
 xlrd.xlsx.ensure_elementtree_imported(False, None)
 xlrd.xlsx.Element_has_iter = True
@@ -20,10 +21,10 @@ xlrd.xlsx.Element_has_iter = True
 POLLING_INTERVAL = 3
 API_URL = "https://rest.uniprot.org"
 
-
 retries = Retry(total=5, backoff_factor=0.25, status_forcelist=[500, 502, 503, 504])
 session = requests.Session()
 session.mount("https://", HTTPAdapter(max_retries=retries))
+
 
 def check_response(response):
     try:
@@ -182,7 +183,7 @@ def get_id_mapping_results_stream(url):
 def get_ENSP_IDs(path_to_xlsx, xlsx):
     df = pd.read_excel(path_to_xlsx + xlsx)
     ENSP_IDs = df['stringId_B']
-    return(ENSP_IDs.tolist())
+    return (ENSP_IDs.tolist())
 
 
 def get_ID_from_mapping_API(id_list):
@@ -237,7 +238,7 @@ def get_ID_from_mapping_API(id_list):
 
                 for i in range(len(uni_entries['results'])):
                     result += [uni_entries['results'][i]['to']['primaryAccession']]
-    return(result)
+    return (result)
 
 
 ### import interactors retrieved from strinDB via get_stringDB.py
@@ -268,4 +269,4 @@ try:
     os.mkdir(export_path)
 except FileExistsError:
     pass
-df.to_excel(export_path + file[0:len(file)-5] + "_ID.xlsx")
+df.to_excel(export_path + file[0:len(file) - 5] + "_ID.xlsx")
