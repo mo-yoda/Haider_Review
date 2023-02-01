@@ -37,5 +37,11 @@ import requests
 # test = subprocess.call(cmd, shell=True)
 # test
 
-x = "hello"
-print(x[0:len(x)-2])
+# test creating dir, if dir is not there
+import os
+path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
+try:
+    os.mkdir(path + "/OG_stringDB_data/")
+except FileExistsError:
+    print("already there")
+    pass
