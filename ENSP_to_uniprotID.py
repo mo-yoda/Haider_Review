@@ -10,6 +10,10 @@ from urllib.parse import urlparse, parse_qs, urlencode
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import pandas as pd
+import xlrd
+# following two lines needed to prevent error when importing xlsx using pd
+xlrd.xlsx.ensure_elementtree_imported(False, None)
+xlrd.xlsx.Element_has_iter = True
 
 ## this is adapted from https://www.uniprot.org/help/id_mapping example
 
@@ -239,24 +243,29 @@ def get_ID_from_mapping_API(id_list):
 ### import interactors retrieved from strinDB via get_stringDB.py
 
 # homeoffice path
-# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
+path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
 # IMZ path
-path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/'
+# path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
 
-extension = 'xlsx'
-os.chdir(path)
-filenames = glob.glob('*.{}'.format(extension))
+file = "interactors_stringDB.xlsx"
 
-# run with every xlsx created by get_stringDB.py
-for file in filenames:
-    df = pd.read_excel(path + file)
-    ENSP_IDs = df['stringId_B']
-    print("Getting IDs for " + str(file))
+## following not needed, since only one xlsx is imported
+# extension = 'xlsx'
+# os.chdir(path)
+# filenames = glob.glob('*.{}'.format(extension))
+# print(filenames)
 
-    temp_results = get_ID_from_mapping_API(ENSP_IDs)
-    # save results in a new column of df
-    col_results = pd.Series(temp_results)
-    df['uniprot_ID_proteinB'] = temp_results
-    # export df
-    df.to_excel(path + "/uniprot_ID/" + file[0:len(file)-5] + "_ID.xlsx")
+df = pd.read_excel(path + file)
+ENSP_IDs = df['stringId_B']
 
+temp_results = get_ID_from_mapping_API(ENSP_IDs)
+# save results in a new column of df
+col_results = pd.Series(temp_results)
+df['uniprot_ID_proteinB'] = temp_results
+# export df
+export_path = path.replace("/OG_stringDB_data/", "/uniprot_ID/")
+try:
+    os.mkdir(export_path)
+except FileExistsError:
+    pass
+df.to_excel(export_path + file[0:len(file)-5] + "_ID.xlsx")
