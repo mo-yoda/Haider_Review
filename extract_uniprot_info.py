@@ -6,10 +6,10 @@ import io
 import os
 
 # homeoffice path
-# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/python_test/'
+path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_ID/'
 # IMZ path
-path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
-file = "ARRB1_interactors_ID.xlsx"
+# path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
+file = "interactors_stringDB_ID.xlsx"
 column = "uniprot_ID_proteinB"
 
 
@@ -33,9 +33,10 @@ print("Getting Keywords from Uniprot ...")
 keyword_url = "https://rest.uniprot.org/keywords/stream?compressed=true&fields=id%2Cname%2Ccategory%2Cgene_ontologies&format=tsv&query=%28%2A%29%20AND%20%28category%3A"
 biol_processes = get_rest_api(keyword_url + "biological_process%29")
 mol_function = get_rest_api(keyword_url + "molecular_function%29")
+cell_comp = get_rest_api(keyword_url + "cellular_component%29")
 
 # join both dfs + export
-selected_keywords = pd.concat([biol_processes, mol_function])
+selected_keywords = pd.concat([biol_processes, mol_function, cell_comp])
 selected_keywords.to_excel(path + "selected_keywords.xlsx")
 
 # create list with Keyword IDs
