@@ -158,9 +158,13 @@ def get_id_mapping_results_search(url):
     results = decode_results(request, file_format, compressed)
     total = int(request.headers["x-total-results"])
     print_progress_batches(0, size, total)
+    for i in results['results']:
+        print(i['from'])
+        print(i['to']['primaryAccession'])
     for i, batch in enumerate(get_batch(request, file_format, compressed), 1):
         results = combine_batches(results, batch, file_format)
         print_progress_batches(i, size, total)
+
     if file_format == "xml":
         return merge_xml_results(results)
     return results
@@ -187,61 +191,83 @@ def get_ENSP_IDs(path_to_xlsx, xlsx):
 
 
 def get_ID_from_mapping_API(id_list):
-    result = []
-    ids_left = len(id_list)
+    ids_left = id_list
+    n_ids_left = len(id_list)
+
+    input_ENSP = []
+    retrieved_IDs = []
     print("#################")
-    print("total ids to aquire " + str(len(id_list)))
+    print("total ids to aquire " + str(n_ids_left))
 
     run = 0
-    while ids_left > 0:
+    while n_ids_left > 0:
         if run == 0:
             print("starting first query ...")
             job_id = submit_id_mapping(
-                from_db="STRING", to_db="UniProtKB", ids=id_list
+                from_db="STRING", to_db="UniProtKB", ids=ids_left
             )
             if check_id_mapping_results_ready(job_id):
                 link = get_id_mapping_results_link(job_id)
                 uni_entries = get_id_mapping_results_search(link)
 
+                # save results
+                ids_fetched = []
+                for i in range(len(uni_entries['results'])):
+                    input_ENSP += [uni_entries['results'][i]['from']]
+                    retrieved_IDs += [uni_entries['results'][i]['to']['primaryAccession']]
+
+                    ids_fetched += [uni_entries['results'][i]['from']]
+
                 n_fetched = len(uni_entries['results'])
                 print("total ids fetched " + str(n_fetched))
 
-                ids_left = ids_left - n_fetched
-                print("ids left after this run " + str(ids_left))
+                ids_left = list(set(ids_left) - set(ids_fetched))
+                n_ids_left = n_ids_left - n_fetched
+                print("ids left after this run " + str(n_ids_left))
+                print("control" + str(len(ids_left)))
                 print("-----------------")
 
                 run += 1
 
-                for i in range(len(uni_entries['results'])):
-                    result += [uni_entries['results'][i]['to']['primaryAccession']]
         else:
             print("starting next query ...")
+            print("leftover ids")
+            print(ids_left)
 
-            # create id_subset removing already fetched entries
-            ids_subset = id_list[len(result):len(id_list)]
+            ## is now ids_left!!!
+            # # create id_subset removing already fetched entries
+            # ids_subset = id_list[len(retrieved_IDs):len(id_list)]
 
             job_id = submit_id_mapping(
-                from_db="STRING", to_db="UniProtKB", ids=ids_subset
+                from_db="STRING", to_db="UniProtKB", ids=ids_left
             )
             if check_id_mapping_results_ready(job_id):
                 link = get_id_mapping_results_link(job_id)
                 uni_entries = get_id_mapping_results_search(link)
 
+                # save results
+                ids_fetched = []
+                for i in range(len(uni_entries['results'])):
+                    input_ENSP += [uni_entries['results'][i]['from']]
+                    retrieved_IDs += [uni_entries['results'][i]['to']['primaryAccession']]
+
                 n_fetched = len(uni_entries['results'])
                 print("total ids fetched " + str(n_fetched))
 
-                ids_left = ids_left - n_fetched
-                print("ids left after this run " + str(ids_left))
-                print("#################")
+                ids_left = list(set(ids_left) - set(ids_fetched))
+                n_ids_left = n_ids_left - n_fetched
+                print("ids left after this run " + str(n_ids_left))
+                print("control" + str(len(ids_left)))
+                print("-----------------")
 
                 run += 1
+        translation_df = pd.concat([pd.Series(input_ENSP), pd.Series(retrieved_IDs)], axis = 1)
+        translation_df.rename(columns={0: "ENSP", 1: "ID"}, inplace=True)
+        print(translation_df.columns)
+    return (translation_df)
 
-                for i in range(len(uni_entries['results'])):
-                    result += [uni_entries['results'][i]['to']['primaryAccession']]
-    return (result)
 
-
-### import interactors retrieved from strinDB via get_stringDB.py
+### import interactors retrieved from stringDB via get_stringDB.py
 
 # homeoffice path
 path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
@@ -256,13 +282,38 @@ file = "interactors_stringDB.xlsx"
 # filenames = glob.glob('*.{}'.format(extension))
 # print(filenames)
 
+# import stringDB df
 df = pd.read_excel(path + file)
 ENSP_IDs = df['stringId_B']
+# somehow~ IDs are fetched in a way that their order do no match entirely the order of submitted ENSP IDs
+# thus, translation df is created and used as dictionary
+ENSP_input = ENSP_IDs.drop_duplicates()
+print("aaaaaaaaaaaaa")
+print(type(ENSP_input))
+print(len(ENSP_input))
 
-temp_results = get_ID_from_mapping_API(ENSP_IDs)
+# create translation df with ENSPs and fetched IDs
+translation_df = get_ID_from_mapping_API(ENSP_input)
+print(translation_df)
+export_path = path.replace("/OG_stringDB_data/", "/uniprot_ID/")
+translation_df.to_excel(export_path + file[0:len(file) - 5] + "_translation.xlsx")
+
+# use translation_df as dictionary to create new series to append to results xlsx
+all_uni_ID = pd.Series(dtype='float64')
+i = 0
+for ENSP in ENSP_IDs:
+    print(i)
+    print(ENSP)
+    print(translation_df[translation_df["ENSP"] == ENSP]["ID"])
+    i += 1
+    all_uni_ID = pd.concat([all_uni_ID,
+              translation_df[translation_df["ENSP"] == ENSP]["ID"]],
+                           ignore_index = True)
+
 # save results in a new column of df
-col_results = pd.Series(temp_results)
-df['uniprot_ID_proteinB'] = temp_results
+df['uniprot_ID_proteinB'] = all_uni_ID
+# df.rename(columns={0: "index"}, inplace=True)
+
 # export df
 export_path = path.replace("/OG_stringDB_data/", "/uniprot_ID/")
 try:
@@ -270,3 +321,12 @@ try:
 except FileExistsError:
     pass
 df.to_excel(export_path + file[0:len(file) - 5] + "_ID.xlsx")
+
+
+### attention:
+# leftover ids
+# ['9606.ENSP00000336630', '9606.ENSP00000485582', '9606.ENSP00000461007']
+# cannot be retrieved from mapper
+# [0] is ADORA2 -> is covered with other ENSP?!
+# look up other too
+# + write code to ignore these?!

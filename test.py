@@ -1,4 +1,4 @@
-import requests
+# import requests
 
 # def get_gene_name(accession_number):
 #     # Send a GET request to the UniProt API
@@ -45,12 +45,22 @@ import requests
 # except FileExistsError:
 #     print("already there")
 #     pass
-import xlrd
-xlrd.xlsx.ensure_elementtree_imported(False, None)
-xlrd.xlsx.Element_has_iter = True
+# import xlrd
+# xlrd.xlsx.ensure_elementtree_imported(False, None)
+# xlrd.xlsx.Element_has_iter = True
+#
+# import pandas as pd
+# # homeoffice path
+# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+# df = pd.read_excel(path + "interactors_stringDB.xlsx")
+# print(df)
 
 import pandas as pd
-# homeoffice path
-path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
-df = pd.read_excel(path + "interactors_stringDB.xlsx")
-print(df)
+
+x = [1,1,1,1,12,3,3,4,5,6123,1,2,65,46,5,42,33,4,5,8,5,5]
+a = [1,12,3,3,4,5]
+C = list(set(x)-set(a))
+
+# filter_set = set(a)
+# C = [a for a in x if a not in filter_set]
+print(C)
