@@ -65,7 +65,7 @@ df = pd.read_csv(io.StringIO(data_string), sep="\t")
 df.rename(columns={df.columns[0]: "index"}, inplace=True)
 
 # identify non-unique interactors, add columns with unique or non-unique
-all_dupl = df.duplicated(subset="stringId_B", keep = False)
+all_dupl = df.duplicated(subset="stringId_B", keep=False)
 
 # create pd.Series for uniq/bArr1/bArr2
 unique = []
@@ -79,8 +79,8 @@ for i, e in enumerate(all_dupl):
 unique = pd.Series(unique)
 
 # add this series as new column to data
-df_uniq = pd.concat([df, unique], axis = 1)
-df_uniq.rename(columns = {0 : "uniqueness"}, inplace=True)
+df_uniq = pd.concat([df, unique], axis=1)
+df_uniq.rename(columns={0: "uniqueness"}, inplace=True)
 
 # export df as xlsx
 # make new folder, if is not there yet

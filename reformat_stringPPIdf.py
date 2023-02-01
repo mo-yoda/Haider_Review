@@ -2,12 +2,12 @@ import pandas as pd
 
 # import interactors retrieved from strinDB via get_stringDB.py
 # homeoffice path
-# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
+path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/'
 # IMZ path
-path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+# path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
 
 all_df = pd.read_excel(path + "interactors_stringDB.xlsx")
-all_df.rename(columns = {all_df.columns[0]: "index"}, inplace=True)
+all_df.rename(columns={all_df.columns[0]: "index"}, inplace=True)
 
 #### reformat retrieved interactors
 ### identify non-unique interactors, add columns with unique or non-unique
