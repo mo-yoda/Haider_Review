@@ -8,22 +8,22 @@ import io
 # IMZ path
 path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/'
 
+# define interactors for which proteins should be retrieved:
+# get STRING ENS via uniprot (manually)
+# bArr1 9606.ENSP00000409581
+# bArr2 9606.ENSP00000403701
+my_genes = ["9606.ENSP00000409581", "9606.ENSP00000403701"]
+
 # HELP
 # https://string-db.org/help/api/
 
 # what we need:
 # /api/tsv/interaction_partners? -> Gets all the STRING interaction partners of your proteins
 
-
 # api parameters, see help site for options
 string_api_url = "https://string-db.org/api"
 output_format = "tsv"
 method = "interaction_partners"
-
-# get STRING ENS via uniprot (manually)
-# bArr1 9606.ENSP00000409581
-# bArr2 9606.ENSP00000403701
-my_genes = ["9606.ENSP00000409581", "9606.ENSP00000403701"]
 
 # built request api
 # https://string-db.org/api/[output-format]/interaction_partners?identifiers=[your_identifiers]&[optional_parameters]
@@ -55,18 +55,40 @@ for line in response.text.strip().split("\n"):
     text_score = l[12]  # textmining score (aus interesse)
     temp_row = "\t".join([query_ensp, query_name,
                           partner_ensp, partner_name,
-                          combined_score, text_score])
+                          combined_score])
     data_string += temp_row + "\n"
 
 # string to dataframe
 df = pd.read_csv(io.StringIO(data_string), sep="\t")
 
+# give first column a name
+df.rename(columns={df.columns[0]: "index"}, inplace=True)
+
+# identify non-unique interactors, add columns with unique or non-unique
+all_dupl = df.duplicated(subset="stringId_B", keep = False)
+
+# create pd.Series for uniq/bArr1/bArr2
+unique = []
+for i, e in enumerate(all_dupl):
+    # means if e = True
+    if e:
+        unique += ["both"]
+    else:
+        # add "bArr1" or "bArr2"
+        unique += [df['preferredName_A'][i]]
+unique = pd.Series(unique)
+
+# add this series as new column to data
+df_uniq = pd.concat([df, unique], axis = 1)
+df_uniq.rename(columns = {0 : "uniqueness"}, inplace=True)
+
+# export df as xlsx
 # make new folder, if is not there yet
 try:
     os.mkdir(path + "/OG_stringDB_data/")
 except FileExistsError:
     pass
-df.to_excel(path + "/OG_stringDB_data/" + "interactors_stringDB.xlsx")
+df_uniq.to_excel(path + "/OG_stringDB_data/" + "interactors_stringDB.xlsx")
 
 ##  about the combined_score
 # The combined score is computed by combining the probabilities from the different evidence channels and
