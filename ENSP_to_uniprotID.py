@@ -11,7 +11,7 @@ import requests
 from requests.adapters import HTTPAdapter, Retry
 import pandas as pd
 
-## this is adapted from https://www.uniprot.org/help/id_mapping exmaple
+## this is adapted from https://www.uniprot.org/help/id_mapping example
 
 POLLING_INTERVAL = 3
 API_URL = "https://rest.uniprot.org"
