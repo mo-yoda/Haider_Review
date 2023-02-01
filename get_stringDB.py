@@ -61,9 +61,6 @@ for line in response.text.strip().split("\n"):
 # string to dataframe
 df = pd.read_csv(io.StringIO(data_string), sep="\t")
 
-# give first column a name
-df.rename(columns={df.columns[0]: "index"}, inplace=True)
-
 # identify non-unique interactors, add columns with unique or non-unique
 all_dupl = df.duplicated(subset="stringId_B", keep=False)
 
