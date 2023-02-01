@@ -20,7 +20,7 @@ string_api_url = "https://string-db.org/api"
 output_format = "tsv"
 method = "interaction_partners"
 
-# get STRING ENS via uniprot
+# get STRING ENS via uniprot (manually)
 # bArr1 9606.ENSP00000409581
 # bArr2 9606.ENSP00000403701
 my_genes = ["9606.ENSP00000409581", "9606.ENSP00000403701"]
@@ -60,7 +60,12 @@ for line in response.text.strip().split("\n"):
 
 # string to dataframe
 df = pd.read_csv(io.StringIO(data_string), sep="\t")
-os.mkdir(path + "/OG_stringDB_data/")
+
+# make new folder, if is not there yet
+try:
+    os.mkdir(path + "/OG_stringDB_data/")
+except FileExistsError:
+    pass
 df.to_excel(path + "/OG_stringDB_data/" + "interactors_stringDB.xlsx")
 
 ##  about the combined_score
