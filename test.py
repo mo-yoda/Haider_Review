@@ -19,9 +19,12 @@ def get_gene_name(accession_number):
 
     entry = root.find(add_uniprot_url('./entry'))
     # gene_name = get_info(entry, add_uniprot_url('./gene/name[@type="primary"]'))
-    x = get_info(entry, add_uniprot_url('./'))
 
-    print(get_info(entry, add_uniprot_url('./dbReference[@type = "GO"]')))
+
+    # print(get_info(entry, add_uniprot_url('./dbReference[@type = "GO"]')))
+    # print(get_info(entry, add_uniprot_url('./dbReference/property[@type = "term"]')))
+    x = str(get_info(entry, add_uniprot_url('./dbReference/property[@type = "term"]')))
+    print(len(x))
 
     return x
 
@@ -32,9 +35,10 @@ def get_info(entry, xml_path):
         # print("no attribute found")
         extracted_info = float("NaN")
     else:
+        extracted_info = str()
         for info in entry.findall(xml_path):
-            extracted_info = info.get('id')
-            print(info.get('id'))
+            extracted_info += ", " + info.get('value')
+            # print(info.get('value'))
     return extracted_info
 
 def add_uniprot_url(xml_path):
