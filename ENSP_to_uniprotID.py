@@ -292,7 +292,7 @@ all_uni_ID = pd.Series(dtype='float64')
 for i, ENSP in enumerate(ENSP_IDs):
     temp_id = translation_df[translation_df["ENSP"] == ENSP]["ID"]
     if len(temp_id) == 0:
-        temp_id = pd.Series('NA')
+        temp_id = pd.Series(float("NaN"))
     all_uni_ID = pd.concat([all_uni_ID, temp_id], ignore_index=True)
 
 # save results in a new column of df
