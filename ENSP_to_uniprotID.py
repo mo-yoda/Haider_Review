@@ -297,7 +297,7 @@ for i, ENSP in enumerate(ENSP_IDs):
 
 # save results in a new column of df
 df['uniprot_ID_proteinB'] = all_uni_ID
-df.rename(columns={'Unnamed: 0': 'index'}, inplace=True)
+df.rename(columns={'Unnamed: 0': 'string_index'}, inplace=True)
 
 # export df
 export_path = path.replace("/OG_stringDB_data/", "/uniprot_ID/")

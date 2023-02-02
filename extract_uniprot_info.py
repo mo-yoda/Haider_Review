@@ -9,7 +9,7 @@ import os
 # path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_ID/'
 # IMZ path
 path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
-file = "interactors_stringDB_ID.xlsx"
+file = "ID_short_test.xlsx"
 column = "uniprot_ID_proteinB"
 
 
@@ -55,7 +55,13 @@ def uniprotlist(path_to_folder, filename, column_name):
     # list of accession numbers
     id_list = df[column_name]
     result_df = get_all_info(id_list)
-    return result_df
+    print(df.columns)
+    print(result_df.columns)
+    # join results with input df
+    export_df = df.join(result_df)
+    print(export_df.columns)
+
+    return export_df
 
 
 # function to get information from a list of accession numbers

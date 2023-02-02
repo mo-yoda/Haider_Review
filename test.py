@@ -55,12 +55,42 @@
 # df = pd.read_excel(path + "interactors_stringDB.xlsx")
 # print(df)
 
+# import pandas as pd
+#
+# x = [1,1,1,1,12,3,3,4,5,6123,1,2,65,46,5,42,33,4,5,8,5,5]
+# a = [1,12,3,3,4,5]
+# C = list(set(x)-set(a))
+#
+# # filter_set = set(a)
+# # C = [a for a in x if a not in filter_set]
+# # print(C)
+#
+#
+# # translation_df[translation_df["ENSP"] == ENSP]["ID"]
+#
+# df = pd.DataFrame([a,a])
+# df.rename(columns = {0: "X"}, inplace=True)
+# df.rename(columns = {1: "Y"}, inplace=True)
+# print(df)
+#
+# print(df[df["X"] == 1]["Y"])
+# print(df[df["X"] == 0]["Y"])
+#
+# d = df[df["X"] == 0]["Y"]
+# print(len(d))
+
 import pandas as pd
 
-x = [1,1,1,1,12,3,3,4,5,6123,1,2,65,46,5,42,33,4,5,8,5,5]
-a = [1,12,3,3,4,5]
-C = list(set(x)-set(a))
 
-# filter_set = set(a)
-# C = [a for a in x if a not in filter_set]
-print(C)
+a = [float("NaN"),12,3,3,4,5]
+b = [4,5,6,7,8,3]
+df = pd.DataFrame([a,b])
+df.rename(columns = {0: "X"}, inplace=True)
+print(df)
+
+print("index of X == NA")
+print(df[df["X"]==float("NaN")].index)
+
+df = df.dropna(axis = 'index')
+print("dropped row df")
+print(df)
