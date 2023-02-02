@@ -6,9 +6,9 @@ import io
 import os
 
 # homeoffice path
-path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_ID/'
+# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_ID/'
 # IMZ path
-# path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
+path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
 file = "interactors_stringDB_ID.xlsx"
 column = "uniprot_ID_proteinB"
 
@@ -46,7 +46,12 @@ kw_list = selected_keywords["Keyword ID"]
 # function to import xlsx file with accession numbers, returns all gathered infos
 def uniprotlist(path_to_folder, filename, column_name):
     print("Gathering info from Uniprot ...")
-    df = pd.read_excel(io=path_to_folder + filename, engine="openpyxl")
+    df_og = pd.read_excel(io=path_to_folder + filename, engine="openpyxl")
+    # remove duplicates
+    df = df_og.drop_duplicates(subset = "uniprot_ID_proteinB")
+    # remove NAs
+    df = df.dropna(axis = 'index')
+
     # list of accession numbers
     id_list = df[column_name]
     result_df = get_all_info(id_list)
@@ -142,13 +147,14 @@ def export_xlsx(path_to_folder, filename, column_name):
     gpcr_df = extract_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
     nogpcr_df = remove_rows(result_df, 'Uniprot Keyword', 'G-protein coupled receptor')
 
+    new_folder = path_to_folder.replace("/uniprot_ID/", "/uniprot_details/")
     try:
-        os.mkdir(path + new_folder)
+        os.mkdir(new_folder)
     except FileExistsError:
         pass
-    result_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_all.xlsx")
-    gpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_gpcrs.xlsx")
-    nogpcr_df.to_excel(path_to_folder + new_folder + filename[:-5] + "_nogpcrs.xlsx")
+    result_df.to_excel(new_folder + filename[:-5] + "_all.xlsx")
+    gpcr_df.to_excel(new_folder + filename[:-5] + "_gpcrs.xlsx")
+    nogpcr_df.to_excel(new_folder + filename[:-5] + "_nogpcrs.xlsx")
     return print("Finished")
 
 
