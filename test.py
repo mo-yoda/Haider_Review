@@ -1,25 +1,55 @@
-# import requests
+import requests
 
-# def get_gene_name(accession_number):
-#     # Send a GET request to the UniProt API
-#     url = "https://www.uniprot.org/uniprot/" + accession_number + ".xml"
-#     r = requests.get(url)
-#     xml_data = r.text
-#
-#     # Parse the XML data
-#     import xml.etree.ElementTree as ET
-#     root = ET.fromstring(xml_data)
-#     print(xml_data)
-#
-#     # Find the gene name
-#     for entry in root.findall('./entry'):
-#         for name in entry.findall('./gene/name'):
-#             return name.text
-#
-# # Test the function
-# accession_number = "P05771" #PKC beta
-# gene_name = get_gene_name(accession_number)
-# print(gene_name)
+def get_gene_name(accession_number):
+    # Send a GET request to the UniProt API
+    url = "https://www.uniprot.org/uniprot/" + accession_number + ".xml"
+    r = requests.get(url)
+    xml_data = r.text
+
+    # Parse the XML data
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(xml_data)
+    # print(xml_data)
+
+    # # Find the gene name
+    # for entry in root.findall('./entry'):
+    #
+    #     for name in entry.findall('./gene/name'):
+    #         return name.text
+
+    entry = root.find(add_uniprot_url('./entry'))
+    # gene_name = get_info(entry, add_uniprot_url('./gene/name[@type="primary"]'))
+    x = get_info(entry, add_uniprot_url('./'))
+
+    print(get_info(entry, add_uniprot_url('./dbReference[@type = "GO"]')))
+
+    return x
+
+
+def get_info(entry, xml_path):
+    # if there is no entry, e.g. no ecNumber since protein is not an enzyme
+    if not entry.findall(xml_path):
+        # print("no attribute found")
+        extracted_info = float("NaN")
+    else:
+        for info in entry.findall(xml_path):
+            extracted_info = info.get('id')
+            print(info.get('id'))
+    return extracted_info
+
+def add_uniprot_url(xml_path):
+    long_path = xml_path.replace("/", "/{http://uniprot.org/uniprot}")
+    return long_path
+
+
+# Test the function
+accession_number = "P05771" #PKC beta
+gene_name = get_gene_name(accession_number)
+print(gene_name)
+
+# gene_name = get_info(entry, add_uniprot_url('./gene/name[@type="primary"]'))
+
+
 
 
 # test running .R in python
@@ -78,19 +108,27 @@
 #
 # d = df[df["X"] == 0]["Y"]
 # print(len(d))
-
-import pandas as pd
-
-
-a = [float("NaN"),12,3,3,4,5]
-b = [4,5,6,7,8,3]
-df = pd.DataFrame([a,b])
-df.rename(columns = {0: "X"}, inplace=True)
-print(df)
-
-print("index of X == NA")
-print(df[df["X"]==float("NaN")].index)
-
-df = df.dropna(axis = 'index')
-print("dropped row df")
-print(df)
+#
+# import pandas as pd
+#
+# a = [float("NaN"),12,3,3,4,5]
+# b = [4,5,6,7,8,3]
+# df = pd.DataFrame([a,b])
+# df.rename(columns = {0: "X"}, inplace=True)
+# print(df)
+#
+# print("index of X == NA")
+# print(df[df["X"]==float("NaN")].index)
+#
+# df = df.dropna(axis = 'index')
+# print("dropped row df")
+# print(df)
+#
+# import pandas as pd
+#
+# a = [float("NaN"),12,3,3,4,5]
+# b = [4,5,6,7,8,3]
+# df = pd.DataFrame([a,b])
+# print(df)
+# print(df[range(3,5)])
+# print(len(df.columns))
