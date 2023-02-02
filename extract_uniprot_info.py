@@ -55,10 +55,13 @@ def uniprotlist(path_to_folder, filename, column_name):
     # list of accession numbers
     id_list = df[column_name]
     result_df = get_all_info(id_list)
+
     print(df.columns)
     print(result_df.columns)
     # join results with input df
-    export_df = df.join(result_df)
+    print(len(df.columns))
+
+    export_df = df[range(1, len(df.columns)+1)].join(result_df[range(1, len(result_df.columns)+1)])
     print(export_df.columns)
 
     return export_df
@@ -114,6 +117,12 @@ def import_xml(accession_number, keyword_list=kw_list):
     # remove first ", "
     keywords = keywords[2:len(keywords)]
 
+    # several GO terms for each entry, get GO no
+    GO_ids = get_GO_terms(entry, add_uniprot_url('./dbReference[@type = "GO"]'), "id")
+    GO_terms = get_GO_terms(entry, add_uniprot_url('./dbReference/property[@type = "term"]'), "term")
+
+
+
     add_info = "dummy"
     return [gene_name, protein_name, species, ec_number, keywords, add_info]
 
@@ -134,6 +143,19 @@ def get_info(entry, xml_path):
         for info in entry.findall(xml_path):
             # print(info.text)
             extracted_info = info.text
+    return extracted_info
+
+
+def get_GO_terms(entry, xml_path, type):
+    if not entry.findall(xml_path):
+        # print("no attribute found")
+        extracted_info = float("NaN")
+    else:
+        for info in entry.findall(xml_path):
+            if type == "id":
+                extracted_info = info.get('id')
+            if type == "term":
+                extracted_info = info.get('value')
     return extracted_info
 
 
