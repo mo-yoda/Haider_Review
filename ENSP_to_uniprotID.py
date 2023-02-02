@@ -12,11 +12,11 @@ from requests.adapters import HTTPAdapter, Retry
 import pandas as pd
 import xlrd
 
-# following two lines needed to prevent error when importing xlsx using pd
-xlrd.xlsx.ensure_elementtree_imported(False, None)
-xlrd.xlsx.Element_has_iter = True
+# # following two lines needed to prevent error when importing xlsx using pd (at home)
+# xlrd.xlsx.ensure_elementtree_imported(False, None)
+# xlrd.xlsx.Element_has_iter = True
 
-## this is adapted from https://www.uniprot.org/help/id_mapping example
+# this is adapted from https://www.uniprot.org/help/id_mapping example
 
 POLLING_INTERVAL = 3
 API_URL = "https://rest.uniprot.org"
@@ -158,9 +158,9 @@ def get_id_mapping_results_search(url):
     results = decode_results(request, file_format, compressed)
     total = int(request.headers["x-total-results"])
     print_progress_batches(0, size, total)
-    for i in results['results']:
-        print(i['from'])
-        print(i['to']['primaryAccession'])
+    # for i in results['results']:
+    #     print(i['from'])
+    #     print(i['to']['primaryAccession'])
     for i, batch in enumerate(get_batch(request, file_format, compressed), 1):
         results = combine_batches(results, batch, file_format)
         print_progress_batches(i, size, total)
@@ -196,7 +196,6 @@ def get_ID_from_mapping_API(id_list):
 
     input_ENSP = []
     retrieved_IDs = []
-    print("#################")
     print("total ids to aquire " + str(n_ids_left))
 
     run = 0
@@ -224,19 +223,11 @@ def get_ID_from_mapping_API(id_list):
                 ids_left = list(set(ids_left) - set(ids_fetched))
                 n_ids_left = n_ids_left - n_fetched
                 print("ids left after this run " + str(n_ids_left))
-                print("control" + str(len(ids_left)))
-                print("-----------------")
 
                 run += 1
-
         else:
+            print("-----------------")
             print("starting next query ...")
-            print("leftover ids")
-            print(ids_left)
-
-            ## is now ids_left!!!
-            # # create id_subset removing already fetched entries
-            # ids_subset = id_list[len(retrieved_IDs):len(id_list)]
 
             job_id = submit_id_mapping(
                 from_db="STRING", to_db="UniProtKB", ids=ids_left
@@ -244,6 +235,11 @@ def get_ID_from_mapping_API(id_list):
             if check_id_mapping_results_ready(job_id):
                 link = get_id_mapping_results_link(job_id)
                 uni_entries = get_id_mapping_results_search(link)
+
+                if len(uni_entries['results']) == 0:
+                    print("Fetching was stopped - could not retrieve IDs for " + str(n_ids_left) + "x ENSPs:")
+                    print(ids_left)
+                    break
 
                 # save results
                 ids_fetched = []
@@ -261,18 +257,17 @@ def get_ID_from_mapping_API(id_list):
                 print("-----------------")
 
                 run += 1
-        translation_df = pd.concat([pd.Series(input_ENSP), pd.Series(retrieved_IDs)], axis = 1)
+        translation_df = pd.concat([pd.Series(input_ENSP), pd.Series(retrieved_IDs)], axis=1)
         translation_df.rename(columns={0: "ENSP", 1: "ID"}, inplace=True)
-        print(translation_df.columns)
     return (translation_df)
 
 
 ### import interactors retrieved from stringDB via get_stringDB.py
 
 # homeoffice path
-path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
 # IMZ path
-# path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
 
 file = "interactors_stringDB.xlsx"
 
@@ -288,31 +283,21 @@ ENSP_IDs = df['stringId_B']
 # somehow~ IDs are fetched in a way that their order do no match entirely the order of submitted ENSP IDs
 # thus, translation df is created and used as dictionary
 ENSP_input = ENSP_IDs.drop_duplicates()
-print("aaaaaaaaaaaaa")
-print(type(ENSP_input))
-print(len(ENSP_input))
 
 # create translation df with ENSPs and fetched IDs
 translation_df = get_ID_from_mapping_API(ENSP_input)
-print(translation_df)
-export_path = path.replace("/OG_stringDB_data/", "/uniprot_ID/")
-translation_df.to_excel(export_path + file[0:len(file) - 5] + "_translation.xlsx")
 
 # use translation_df as dictionary to create new series to append to results xlsx
 all_uni_ID = pd.Series(dtype='float64')
-i = 0
-for ENSP in ENSP_IDs:
-    print(i)
-    print(ENSP)
-    print(translation_df[translation_df["ENSP"] == ENSP]["ID"])
-    i += 1
-    all_uni_ID = pd.concat([all_uni_ID,
-              translation_df[translation_df["ENSP"] == ENSP]["ID"]],
-                           ignore_index = True)
+for i, ENSP in enumerate(ENSP_IDs):
+    temp_id = translation_df[translation_df["ENSP"] == ENSP]["ID"]
+    if len(temp_id) == 0:
+        temp_id = pd.Series('NA')
+    all_uni_ID = pd.concat([all_uni_ID, temp_id], ignore_index=True)
 
 # save results in a new column of df
 df['uniprot_ID_proteinB'] = all_uni_ID
-# df.rename(columns={0: "index"}, inplace=True)
+df.rename(columns={0: "index"}, inplace=True)
 
 # export df
 export_path = path.replace("/OG_stringDB_data/", "/uniprot_ID/")
@@ -320,13 +305,6 @@ try:
     os.mkdir(export_path)
 except FileExistsError:
     pass
+translation_df.to_excel(export_path + file[0:len(file) - 5] + "_translation.xlsx")
 df.to_excel(export_path + file[0:len(file) - 5] + "_ID.xlsx")
 
-
-### attention:
-# leftover ids
-# ['9606.ENSP00000336630', '9606.ENSP00000485582', '9606.ENSP00000461007']
-# cannot be retrieved from mapper
-# [0] is ADORA2 -> is covered with other ENSP?!
-# look up other too
-# + write code to ignore these?!
