@@ -61,7 +61,7 @@ def uniprotlist(path_to_folder, filename, column_name):
     # join results with input df
     print(len(df.columns))
 
-    export_df = df.iloc[:, 2:len(df.columns)].join(result_df.iloc[:, 1:len(result_df.columns)])
+    export_df = df.iloc[:, 1:len(df.columns)].join(result_df.iloc[:, 1:len(result_df.columns)])
     # export_df = df[range(1, len(df.columns)+1)].join(result_df[range(1, len(result_df.columns)+1)])
     print(export_df.columns)
 
@@ -86,6 +86,8 @@ def get_all_info(id_list):
                          "Species",
                          "EC Number",
                          "Uniprot Keyword",
+                         "GO IDs",
+                         "GO terms",
                          "dummy"]  # !!! edit this according to extracted info!
     return result_df
 
@@ -120,15 +122,10 @@ def import_xml(accession_number, keyword_list=kw_list):
 
     # several GO terms for each entry, get GO no
     GO_ids = get_GO_terms(entry, add_uniprot_url('./dbReference[@type = "GO"]'), "id")
-    # print("GOO")
-    # print(GO_ids)
     GO_terms = get_GO_terms(entry, add_uniprot_url('./dbReference/property[@type = "term"]'), "term")
-    # print(GO_terms)
-
-
 
     add_info = "dummy"
-    return [gene_name, protein_name, species, ec_number, keywords, add_info]
+    return [gene_name, protein_name, species, ec_number, keywords, GO_ids, GO_terms, add_info]
 
 
 # function to add "{http://uniprot.org/uniprot}" to xml paths
@@ -151,16 +148,22 @@ def get_info(entry, xml_path):
 
 
 def get_GO_terms(entry, xml_path, type):
+    # gather all GO terms or IDs in string object
+    retrieved_GO = str()
     if not entry.findall(xml_path):
         # print("no attribute found")
-        extracted_info = float("NaN")
+        retrieved_GO = float("NaN")
     else:
         for info in entry.findall(xml_path):
             if type == "id":
                 extracted_info = info.get('id')
+                retrieved_GO += ", " + extracted_info
             if type == "term":
                 extracted_info = info.get('value')
-    return extracted_info
+                retrieved_GO += ", " + extracted_info
+        # remove first ", "
+        retrieved_GO = retrieved_GO[2:len(retrieved_GO)]
+    return retrieved_GO
 
 
 # function to extract all rows containing a specific value in a specific column, used to identify GPCRs
@@ -193,6 +196,3 @@ def export_xlsx(path_to_folder, filename, column_name):
 # execute
 export_xlsx(path, file, column)
 
-
-# TODO
-# add ENSP ID export to get_info()
