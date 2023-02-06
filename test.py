@@ -91,36 +91,36 @@
 # df = pd.read_excel(path + "interactors_stringDB.xlsx")
 # print(df)
 
-import pandas as pd
-
-x = [1,1,1,1,12,3,3,4,5,6123,1,2,65,46,5,42,33,4,5,8,5,5]
-a = [1,12,3,3,4,5]
-b = [1,5,46,4,8,9]
-C = list(set(x)-set(a))
-
-# filter_set = set(a)
-# C = [a for a in x if a not in filter_set]
-# print(C)
-
-
-# translation_df[translation_df["ENSP"] == ENSP]["ID"]
-
-df = pd.DataFrame([a,b])
-df.rename(columns = {0: "X"}, inplace=True)
-df.rename(columns = {1: "Y"}, inplace=True)
-print(df)
-
-print(df[df["X"] == 1]["Y"])
-print(df[df["X"] == 0]["Y"])
-
-d = df[df["X"] == 0]["Y"]
-print(len(d))
-
-# test removing row based on value in Y
-# pendant in STRINGdb would be score >= 0.5
-print(df["Y"]>=5)
-x = df[df["Y"]>5]
-print(x)
+# import pandas as pd
+#
+# x = [1,1,1,1,12,3,3,4,5,6123,1,2,65,46,5,42,33,4,5,8,5,5]
+# a = [1,12,3,3,4,5]
+# b = [1,5,46,4,8,9]
+# C = list(set(x)-set(a))
+#
+# # filter_set = set(a)
+# # C = [a for a in x if a not in filter_set]
+# # print(C)
+#
+#
+# # translation_df[translation_df["ENSP"] == ENSP]["ID"]
+#
+# df = pd.DataFrame([a,b])
+# df.rename(columns = {0: "X"}, inplace=True)
+# df.rename(columns = {1: "Y"}, inplace=True)
+# print(df)
+#
+# print(df[df["X"] == 1]["Y"])
+# print(df[df["X"] == 0]["Y"])
+#
+# d = df[df["X"] == 0]["Y"]
+# print(len(d))
+#
+# # test removing row based on value in Y
+# # pendant in STRINGdb would be score >= 0.5
+# print(df["Y"]>=5)
+# x = df[df["Y"]>5]
+# print(x)
 
 
 #
@@ -147,3 +147,21 @@ print(x)
 # print(df)
 # print(df[range(3,5)])
 # print(len(df.columns))
+
+
+import pandas as pd
+a = [1,12,3,3,4,5]
+b = [1,5,46,4,8,9]
+df = pd.DataFrame([a,b])
+df.rename(columns = {0: "X"}, inplace=True)
+df.rename(columns = {1: "Y"}, inplace=True)
+print(df)
+
+print("---------")
+df2 = pd.DataFrame([b,a])
+df2.rename(columns = {0: "X"}, inplace=True)
+df2.rename(columns = {1: "Y"}, inplace=True)
+print(df2)
+print("---------")
+print(df.iloc[: , 4:6])
+# df.iloc[1,2].join(df2.iloc[3])
