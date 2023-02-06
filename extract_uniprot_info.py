@@ -9,7 +9,7 @@ import os
 # path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_ID/'
 # IMZ path
 path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
-file = "ID_short_test.xlsx"
+file = "interactors_stringDB_ID.xlsx"
 column = "uniprot_ID_proteinB"
 
 
@@ -61,7 +61,8 @@ def uniprotlist(path_to_folder, filename, column_name):
     # join results with input df
     print(len(df.columns))
 
-    export_df = df[range(1, len(df.columns)+1)].join(result_df[range(1, len(result_df.columns)+1)])
+    export_df = df.iloc[:, 2:len(df.columns)].join(result_df.iloc[:, 1:len(result_df.columns)])
+    # export_df = df[range(1, len(df.columns)+1)].join(result_df[range(1, len(result_df.columns)+1)])
     print(export_df.columns)
 
     return export_df
@@ -119,7 +120,10 @@ def import_xml(accession_number, keyword_list=kw_list):
 
     # several GO terms for each entry, get GO no
     GO_ids = get_GO_terms(entry, add_uniprot_url('./dbReference[@type = "GO"]'), "id")
+    # print("GOO")
+    # print(GO_ids)
     GO_terms = get_GO_terms(entry, add_uniprot_url('./dbReference/property[@type = "term"]'), "term")
+    # print(GO_terms)
 
 
 
