@@ -59,7 +59,12 @@ for line in response.text.strip().split("\n"):
     data_string += temp_row + "\n"
 
 # string to dataframe
-df = pd.read_csv(io.StringIO(data_string), sep="\t")
+df_raw = pd.read_csv(io.StringIO(data_string), sep="\t")
+
+# remove all entries with combined score < 0.5
+df = df_raw[df_raw['score']>=0.5]
+# index is kept in lin above, thus reset index
+df.reset_index(inplace=True)
 
 # identify non-unique interactors, add columns with unique or non-unique
 all_dupl = df.duplicated(subset="stringId_B", keep=False)
