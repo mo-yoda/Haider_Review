@@ -51,20 +51,16 @@ def uniprotlist(path_to_folder, filename, column_name):
     df = df_og.drop_duplicates(subset = "uniprot_ID_proteinB")
     # remove NAs
     df = df.dropna(axis = 'index')
+    # reset index, OG index is kept in "string_index"
+    df.reset_index(inplace=True)
 
     # list of accession numbers
     id_list = df[column_name]
+    # get info for each ID
     result_df = get_all_info(id_list)
 
-    print(df.columns)
-    print(result_df.columns)
     # join results with input df
-    print(len(df.columns))
-
-    export_df = df.iloc[:, 1:len(df.columns)].join(result_df.iloc[:, 1:len(result_df.columns)])
-    # export_df = df[range(1, len(df.columns)+1)].join(result_df[range(1, len(result_df.columns)+1)])
-    print(export_df.columns)
-
+    export_df = df.iloc[:, 2:len(df.columns)].join(result_df.iloc[:, 1:len(result_df.columns)])
     return export_df
 
 
