@@ -112,7 +112,7 @@ def import_xml(accession_number, keyword_list=kw_list):
         temp = get_info(entry, add_uniprot_url('./keyword[@id="' + key + '"]'))
         # if there is an entry, add string to keywords
         if not pd.isna(temp):
-            keywords = keywords + ", " + temp
+            keywords = keywords + "; " + temp
     # remove first ", "
     keywords = keywords[2:len(keywords)]
 
@@ -153,10 +153,10 @@ def get_GO_terms(entry, xml_path, type):
         for info in entry.findall(xml_path):
             if type == "id":
                 extracted_info = info.get('id')
-                retrieved_GO += ", " + extracted_info
+                retrieved_GO += "; " + extracted_info
             if type == "term":
                 extracted_info = info.get('value')
-                retrieved_GO += ", " + extracted_info
+                retrieved_GO += "; " + extracted_info
         # remove first ", "
         retrieved_GO = retrieved_GO[2:len(retrieved_GO)]
     return retrieved_GO
