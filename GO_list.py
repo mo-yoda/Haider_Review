@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 # homeoffice path
 # path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_details/'
@@ -44,14 +45,16 @@ def get_category_id(GO_term_list, GO_id_list, category):
     GO_df = pd.DataFrame({'GO_terms': GO_terms, 'GO_ids': GO_ids})
     return GO_df
 
+
 def complete_category_df(df, row, category_df):
     n_rows = len(category_df)
-    for cols in df.columns[0:len(df.columns)-2]:
+    for cols in df.columns[0:len(df.columns) - 2]:
         value = df[cols].iloc[row]
         category_df = pd.concat((category_df,
-                      pd.Series([value]*n_rows).rename(cols)),
-                      axis = 'columns')
+                                 pd.Series([value] * n_rows).rename(cols)),
+                                axis='columns')
     return category_df
+
 
 def create_category_df(df, row, category):
     temp_row = df.iloc[row]
@@ -66,26 +69,41 @@ def create_category_df(df, row, category):
 
 
 # create GO df for each category and
-def GO_by_row(df):
+def GO_by_row(df, category):
+    print("Getting GOs for " + str(len(df)) + "x proteins")
+    # initiate output df
+    C_df = pd.DataFrame()
+
     # each row represents one interaction protein
     for row in range(len(df)):
-        print(row)
-        print("Formatting GOs of " + df['preferredName_B'].iloc[row])
+        print(df['preferredName_B'].iloc[row])
 
-        C_GO = create_category_df(df, row, 'C:')
-        F_GO = create_category_df(df, row, 'F:')
-        P_GO = create_category_df(df, row, 'P:')
-
-    print("run successful")
-
-
+        C_temp = create_category_df(df, row, category)
+        C_df = pd.concat((C_df, C_temp), axis='index', ignore_index=True)
+    return C_df
 
 
 def main(path_to_folder, filename):
     df = pd.read_excel(io=path_to_folder + filename, engine="openpyxl")
     df_sub = format_df(df)
+    print("Category: cellular component")
+    C_GO = GO_by_row(df_sub, 'C:')
+    print("Category: molecular function")
+    F_GO = GO_by_row(df_sub, 'F:')
+    print("Category: biological process")
+    P_GO = GO_by_row(df_sub, 'P:')
 
-    GO_by_row(df_sub)
+    print("Exporting results...")
+    new_folder = path_to_folder.replace("/uniprot_details/", "/GO_analysis/")
+    try:
+        os.mkdir(new_folder)
+    except FileExistsError:
+        pass
+    C_GO.to_excel(new_folder + filename[:-5] + "_GO_C.xlsx")
+    F_GO.to_excel(new_folder + filename[:-5] + "_GO_F.xlsx")
+    P_GO.to_excel(new_folder + filename[:-5] + "_GO_P.xlsx")
+
+    print("Finished")
 
 
 main(path, file)
