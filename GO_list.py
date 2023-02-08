@@ -33,11 +33,14 @@ def get_category_id(GO_term_list, GO_id_list, category):
     GO_terms = []
     GO_ids = []
     # this may be needed later?
-    # if len(indices) == 0:
-    # indices are then used to get the corresponding terms and ids
-    for index in indices:
-        GO_terms += [GO_term_list[index]]
-        GO_ids += [GO_id_list[index]]
+    if len(indices) == 0:
+        GO_terms = [float("NaN")]
+        GO_ids = [float("NaN")]
+    else:
+        # indices are then used to get the corresponding terms and ids
+        for index in indices:
+            GO_terms += [GO_term_list[index]]
+            GO_ids += [GO_id_list[index]]
     GO_df = pd.DataFrame({'GO_terms': GO_terms, 'GO_ids': GO_ids})
     return GO_df
 
@@ -50,6 +53,17 @@ def complete_category_df(df, row, category_df):
                       axis = 'columns')
     return category_df
 
+def create_category_df(df, row, category):
+    temp_row = df.iloc[row]
+
+    # split string to get single terms or ids
+    GO_terms = str(temp_row['GO terms']).split(r'; ')
+    GO_ids = str(temp_row['GO IDs']).split(r'; ')
+
+    category_df = get_category_id(GO_terms, GO_ids, category)
+    category_df = complete_category_df(df, row, category_df)
+    return category_df
+
 
 # create GO df for each category and
 def GO_by_row(df):
@@ -57,26 +71,10 @@ def GO_by_row(df):
     for row in range(len(df)):
         print(row)
         print("Formatting GOs of " + df['preferredName_B'].iloc[row])
-        temp_row = df.iloc[row]
 
-        # split string to get single terms or ids
-        GO_terms = str(temp_row['GO terms']).split(r'; ')
-        GO_ids = str(temp_row['GO IDs']).split(r'; ')
-
-        # get GO term and ids by category
-        C_GO = get_category_id(GO_terms, GO_ids, 'C:')
-        # F_GO = get_category_id(GO_terms, GO_ids, 'F:')
-        # P_GO = get_category_id(GO_terms, GO_ids, 'P:')
-
-        # complete df for each category with remaining factors
-        C_GO = complete_category_df(df, row, C_GO)
-
-
-        print(C_GO)
-
-
-
-
+        C_GO = create_category_df(df, row, 'C:')
+        F_GO = create_category_df(df, row, 'F:')
+        P_GO = create_category_df(df, row, 'P:')
 
     print("run successful")
 
