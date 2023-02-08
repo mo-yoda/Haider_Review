@@ -149,23 +149,35 @@
 # print(len(df.columns))
 
 
+# import pandas as pd
+# a = [1,12,3,3,4,5]
+# b = [1,5,46,4,8,9]
+# df = pd.DataFrame([a,b])
+# df.rename(columns = {0: "X"}, inplace=True)
+# df.rename(columns = {1: "Y"}, inplace=True)
+# print(df)
+#
+# print("---------")
+# df2 = pd.DataFrame([b,a])
+# df2.rename(columns = {0: "X"}, inplace=True)
+# df2.rename(columns = {1: "Y"}, inplace=True)
+# print(df2)
+# print("---------")
+# print(df.iloc[: , 4:6])
+# # df.iloc[1,2].join(df2.iloc[3])
+#
+# print(df2[df2["X"]==1].index)
+#
+# print(df[["X", "Y"]])
 import pandas as pd
+
 a = [1,12,3,3,4,5]
-b = [1,5,46,4,8,9]
-df = pd.DataFrame([a,b])
+
+df = pd.DataFrame([a,a])
+print(df)
 df.rename(columns = {0: "X"}, inplace=True)
 df.rename(columns = {1: "Y"}, inplace=True)
-print(df)
+print(df.columns)
+print(df.columns[0:len(df.columns)-2])
 
-print("---------")
-df2 = pd.DataFrame([b,a])
-df2.rename(columns = {0: "X"}, inplace=True)
-df2.rename(columns = {1: "Y"}, inplace=True)
-print(df2)
-print("---------")
-print(df.iloc[: , 4:6])
-# df.iloc[1,2].join(df2.iloc[3])
 
-print(df2[df2["X"]==1].index)
-
-print(df[["X", "Y"]])
