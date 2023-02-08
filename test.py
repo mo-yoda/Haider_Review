@@ -165,3 +165,7 @@ print(df2)
 print("---------")
 print(df.iloc[: , 4:6])
 # df.iloc[1,2].join(df2.iloc[3])
+
+print(df2[df2["X"]==1].index)
+
+print(df[["X", "Y"]])
