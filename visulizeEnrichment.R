@@ -48,8 +48,10 @@ for(file in filenames){
 workflow_single <- function(GO_id){
   # create similiarity matrix
   sim_matrix = GO_similarity(GO_id)
-  # cluster GO terms and create plot
-  df = simplifyGO(sim_matrix)
+  # cluster GO terms and create plot using >binary cutoff<
+  # df = simplifyGO(sim_matrix)
+  # cluster GO terms and create plot using >kmeans<
+  df = simplifyGO(sim_matrix, method = "kmeans")
 }
 
 # for bArr1 only with all GO terms in chart export from DAVID
