@@ -79,13 +79,13 @@ workflow_single(sig_list[[2]]$ID)
 sig_GOs_list <- list()
 sig_GOs_list[["bArr1"]] <- c(sig_list[[1]]$ID)
 sig_GOs_list[["bArr2"]] <- c(sig_list[[2]]$ID)
-simplifyGOFromMultipleLists(sig_GOs_list)
+simplifyGOFromMultipleLists(sig_GOs_list, method = kmeans)
 
 # run with all GO_ids (EASE score < 0.1)
 GOs_list <- list()
 GOs_list[["bArr1"]] <- c(chart_list[[1]]$ID)
 GOs_list[["bArr2"]] <- c(chart_list[[2]]$ID)
-simplifyGOFromMultipleLists(GOs_list)
+simplifyGOFromMultipleLists(GOs_list, method = kmeans)
 
 
 
