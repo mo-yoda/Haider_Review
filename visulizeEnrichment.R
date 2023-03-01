@@ -20,7 +20,7 @@ get_GO_id <- function(GO_id){
 # function to prepare each chart for analysis/visualization
 format_chart <- function(chart){
   formatted <- chart
-  formatted$ID <- lapply(chart[,2], get_GO_id)
+  formatted$ID <- unlist(lapply(chart[,2], get_GO_id))
   return(formatted)
 }
 
@@ -42,6 +42,18 @@ for(file in filenames){
   chart_list[[file]] <- format_chart(chart_list[[file]])
 }
 
+### simplifyEnrichment ###
+# plot similiarty matrix for one enrichment analysis
+
+workflow_single <- function(GO_id){
+  # create similiarity matrix
+  sim_matrix = GO_similarity(GO_id)
+  # cluster GO terms and create plot
+  df = simplifyGO(sim_matrix)
+}
+
+workflow_single(chart_list[[1]]$ID)
+
 
 
 
@@ -49,5 +61,5 @@ for(file in filenames){
 t <- read.delim(filenames[1])
 t[2]
 names(t)
-t$ID <- lapply(t[,2], get_GO_id)
+t$ID <- unlist(lapply(t[,2], get_GO_id))
 names(t)
