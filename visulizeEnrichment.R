@@ -52,7 +52,25 @@ workflow_single <- function(GO_id){
   df = simplifyGO(sim_matrix)
 }
 
+# for bArr1 only with all GO terms in chart export from DAVID
 workflow_single(chart_list[[1]]$ID)
+
+# for bArr2 only with all GO terms in chart export from DAVID
+workflow_single(chart_list[[2]]$ID)
+
+# subset to only use GO_ids with an EASE score (more conservative p value) < 0.05
+sig_list <- list()
+for(file in names(chart_list)){
+  temp_df <- chart_list[[file]]
+  df_sub <- temp_df[temp_df$PValue < 0.05, ]
+  sig_list[[file]] <- df_sub
+}
+
+# run workflow with this subset
+# bArr1
+workflow_single(sig_list[[1]]$ID)
+# bArr2
+workflow_single(sig_list[[2]]$ID)
 
 
 
@@ -63,3 +81,6 @@ t[2]
 names(t)
 t$ID <- unlist(lapply(t[,2], get_GO_id))
 names(t)
+hist(t$PValue)
+
+
