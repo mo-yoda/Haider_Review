@@ -28,10 +28,12 @@ format_chart <- function(chart){
 # homeoffice path
 # path =
 # IMZ path
-path <- r"(B:\FuL\IMZ01\Hoffmann\Personal data folders\Mona\Paper\XXX_Haider et al_Review\barr1+2 interactome\230227_PPI_analysis\after talking to Dario\Datasets\without GPCRs)"
+path <- r"(B:\FuL\IMZ01\Hoffmann\Personal data folders\Mona\Paper\XXX_Haider et al_Review\barr1+2 interactome\230227_PPI_analysis_THIS\after talking to Dario_THIS\without GPCRs)"
+# enr_background <- r"(\enrichment specific against all interactors)"
+enr_background <- r"(\enrichment against human proteome)"
 subpath <- r"(\only biological process annot)"
 
-setwd(paste0(path, subpath))
+setwd(paste0(path, enr_background, subpath))
 
 # import annotation charts which contain enriched GO terms
 filenames <- list.files(getwd(), pattern = "chart.txt")
@@ -49,9 +51,9 @@ workflow_single <- function(GO_id){
   # create similiarity matrix
   sim_matrix = GO_similarity(GO_id)
   # cluster GO terms and create plot using >binary cutoff<
-  # df = simplifyGO(sim_matrix)
+  df = simplifyGO(sim_matrix)
   # cluster GO terms and create plot using >kmeans<
-  df = simplifyGO(sim_matrix, method = "kmeans")
+  # df = simplifyGO(sim_matrix, method = "kmeans")
 }
 
 # for bArr1 only with all GO terms in chart export from DAVID
