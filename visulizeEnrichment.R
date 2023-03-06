@@ -30,13 +30,14 @@ format_chart <- function(chart){
 # IMZ path
 path <- r"(B:\FuL\IMZ01\Hoffmann\Personal data folders\Mona\Paper\XXX_Haider et al_Review\barr1+2 interactome\230227_PPI_analysis_THIS\after talking to Dario_THIS\without GPCRs)"
 # enr_background <- r"(\enrichment specific against all interactors)"
-enr_background <- r"(\enrichment against human proteome)"
+enr_background <- r"(\enr specific against all interactors)"
 subpath <- r"(\only biological process annot)"
 
 setwd(paste0(path, enr_background, subpath))
 
 # import annotation charts which contain enriched GO terms
 filenames <- list.files(getwd(), pattern = "chart.txt")
+print(filenames)
 
 chart_list <- list()
 for(file in filenames){
@@ -61,6 +62,9 @@ workflow_single(chart_list[[1]]$ID)
 
 # for bArr2 only with all GO terms in chart export from DAVID
 workflow_single(chart_list[[2]]$ID)
+
+# for "both" interactors with all GO terms in chart export from DAVID
+workflow_single(chart_list[[3]]$ID)
 
 # subset to only use GO_ids with an EASE score (more conservative p value) < 0.05
 sig_list <- list()
@@ -90,6 +94,7 @@ simplifyGOFromMultipleLists(sig_GOs_list)
 GOs_list <- list()
 GOs_list[["bArr1"]] <- c(chart_list[[1]]$ID)
 GOs_list[["bArr2"]] <- c(chart_list[[2]]$ID)
+GOs_list[["both"]] <- c(chart_list[[3]]$ID)
 simplifyGOFromMultipleLists(GOs_list)
 
 
