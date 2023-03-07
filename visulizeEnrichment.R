@@ -94,16 +94,24 @@ GOs_list[["bArr2"]] <- c(chart_list[[2]]$ID)
 # GOs_list[["both"]] <- c(chart_list[[3]]$ID)
 simplifyGOFromMultipleLists(GOs_list)
 
-### improve heatmap display ###
-# SVG graphics device
-svg("my_plot.svg", width = 1407, height = 988)
+# with p values
+create_p_GO <- function(df){
+  pValues <- c(df$PValue)
+  names(pValues) <- c(df$ID)
+  return(pValues)
+}
+p_GO_list <- list()
+p_GO_list[["bArr1"]] <- create_p_GO(chart_list[[1]])
+p_GO_list[["bArr2"]] <- create_p_GO(chart_list[[2]])
 
+simplifyGOFromMultipleLists(p_GO_list)
+
+
+### improve heatmap display ###
 simplifyGOFromMultipleLists(sig_GOs_list,
                             fontsize_range = c(8, 25),
                             stat = "pvalue",
                             word_cloud_grob_param = list(max_width = 100))
-# Close the graphics device
-dev.off()
 
 ### get details from clustering ###
 GO_clusters <- simplifyGOFromMultipleLists(sig_GOs_list, plot = FALSE)
