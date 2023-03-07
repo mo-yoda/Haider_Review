@@ -35,7 +35,7 @@ subpath <- r"(\only biological process annot)"
 
 setwd(paste0(path, enr_background, subpath))
 
-# import annotation charts which contain enriched GO terms
+# import annotation charts (exported from DAVID) which contain enriched GO terms
 filenames <- list.files(getwd(), pattern = "chart.txt")
 print(filenames)
 
@@ -45,7 +45,8 @@ for(file in filenames){
   chart_list[[file]] <- format_chart(chart_list[[file]])
 }
 
-### simplifyEnrichment ###
+
+### simplifyEnrichment - explore datesets ###
 # plot similiarty matrix for one enrichment analysis
 
 workflow_single <- function(GO_id){
@@ -53,8 +54,6 @@ workflow_single <- function(GO_id){
   sim_matrix = GO_similarity(GO_id)
   # cluster GO terms and create plot using >binary cutoff<
   df = simplifyGO(sim_matrix)
-  # cluster GO terms and create plot using >kmeans<
-  # df = simplifyGO(sim_matrix, method = "kmeans")
 }
 
 # for bArr1 only with all GO terms in chart export from DAVID
@@ -71,9 +70,7 @@ sig_list <- list()
 for(file in names(chart_list)){
   temp_df <- chart_list[[file]]
   # PValue = EASE score
-  # df_sub <- temp_df[temp_df$PValue < 0.05, ]
-  # Benjamini
-  df_sub <- temp_df[temp_df$Benjamini < 0.05, ]
+  df_sub <- temp_df[temp_df$PValue < 0.05, ]
   sig_list[[file]] <- df_sub
 }
 
@@ -94,19 +91,49 @@ simplifyGOFromMultipleLists(sig_GOs_list)
 GOs_list <- list()
 GOs_list[["bArr1"]] <- c(chart_list[[1]]$ID)
 GOs_list[["bArr2"]] <- c(chart_list[[2]]$ID)
-GOs_list[["both"]] <- c(chart_list[[3]]$ID)
+# GOs_list[["both"]] <- c(chart_list[[3]]$ID)
 simplifyGOFromMultipleLists(GOs_list)
 
+### get details from clustering ###
+GO_clusters <- simplifyGOFromMultipleLists(sig_GOs_list, plot = FALSE)
 
+# get cluster of placement of each GO term
+# add column to initial data which holds the cluster in which this GO term was clustered
+GO_in_clusters_list <- list()
+i = 1
+for (df in chart_list){
+  cluster_of_GO <- c()
+  for (GO in df$ID){
+    temp_cluster <- GO_clusters$cluster[GO_clusters$id == GO]
+    if(length(temp_cluster) == 0){
+      temp_cluster <- "NA"
+    }
+    cluster_of_GO <- c(cluster_of_GO, temp_cluster)
+  }
+  df$cluster <- cluster_of_GO
+  GO_in_clusters_list[[i]] <- df
+  i = i+1
+}
 
+# get proteins which are represented in clusters via GO term
+get_ids_per_cluster <- function(df){
+  proteins_in_clusters_list <- list()
+    for (cluster in levels(as.factor(df$cluster))){
+    print("---------------")
+    print(cluster)
+    # get uniprot IDs per cluster
+    temp_uni_ids <- t$Genes[t$cluster == cluster]
+    # as they are sorted per GO term, split + unlist to get one vector per cluster
+    temp_uni_ids <- str_split(temp_uni_ids, ", ")
+    temp_uni_ids <- unlist(temp_uni_ids)
+    # remove duplicates
+    temp_uni_ids <- unique(temp_uni_ids)
+    proteins_in_clusters_list[[cluster]] <- unlist(temp_uni_ids)
+  }
+  return(proteins_in_clusters_list)
+}
 
+proteins_in_clusters_bArr1 <- get_ids_per_cluster(GO_in_clusters_list[[1]])
+proteins_in_clusters_bArr2 <- get_ids_per_cluster(GO_in_clusters_list[[2]])
 
-# GO terms have to be spearated first! at ~, use stringr package to create new col
-t <- read.delim(filenames[1])
-t[2]
-names(t)
-t$ID <- unlist(lapply(t[,2], get_GO_id))
-names(t)
-hist(t$PValue)
-
-
+# translation of uniprot ids missing
