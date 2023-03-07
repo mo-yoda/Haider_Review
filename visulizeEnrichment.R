@@ -109,9 +109,9 @@ simplifyGOFromMultipleLists(p_GO_list)
 
 ### improve heatmap display ###
 simplifyGOFromMultipleLists(sig_GOs_list,
-                            fontsize_range = c(8, 25),
+                            fontsize_range = c(10, 27),
                             stat = "pvalue",
-                            word_cloud_grob_param = list(max_width = 100))
+                            word_cloud_grob_param = list(max_width = 110))
 
 ### get details from clustering ###
 GO_clusters <- simplifyGOFromMultipleLists(sig_GOs_list, plot = FALSE)
@@ -142,7 +142,7 @@ get_ids_per_cluster <- function(df){
     print("---------------")
     print(cluster)
     # get uniprot IDs per cluster
-    temp_uni_ids <- t$Genes[t$cluster == cluster]
+    temp_uni_ids <- df$Genes[df$cluster == cluster]
     # as they are sorted per GO term, split + unlist to get one vector per cluster
     temp_uni_ids <- str_split(temp_uni_ids, ", ")
     temp_uni_ids <- unlist(temp_uni_ids)
