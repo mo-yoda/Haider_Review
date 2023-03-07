@@ -1,7 +1,8 @@
 ### environment ###
 # list of packages needed
 wants <- c("simplifyEnrichment",
-           "stringr")
+           "stringr",
+           "openxlsx")
 has <- wants %in% rownames(installed.packages())
 if(any(!has)) install.packages(wants[!has])
 lapply(wants, require, character.only = TRUE)
@@ -44,7 +45,6 @@ for(file in filenames){
   chart_list[[file]] <- read.delim(file, header = TRUE)
   chart_list[[file]] <- format_chart(chart_list[[file]])
 }
-
 
 ### simplifyEnrichment - explore datesets ###
 # plot similiarty matrix for one enrichment analysis
@@ -94,6 +94,11 @@ GOs_list[["bArr2"]] <- c(chart_list[[2]]$ID)
 # GOs_list[["both"]] <- c(chart_list[[3]]$ID)
 simplifyGOFromMultipleLists(GOs_list)
 
+### improve heatmap display ###
+simplifyGOFromMultipleLists(sig_GOs_list)
+
+
+
 ### get details from clustering ###
 GO_clusters <- simplifyGOFromMultipleLists(sig_GOs_list, plot = FALSE)
 
@@ -103,15 +108,16 @@ GO_in_clusters_list <- list()
 i = 1
 for (df in chart_list){
   cluster_of_GO <- c()
-  for (GO in df$ID){
+  df_sub <- df[df$PValue < 0.05, ]
+  for (GO in df_sub$ID){
     temp_cluster <- GO_clusters$cluster[GO_clusters$id == GO]
     if(length(temp_cluster) == 0){
       temp_cluster <- "NA"
     }
     cluster_of_GO <- c(cluster_of_GO, temp_cluster)
   }
-  df$cluster <- cluster_of_GO
-  GO_in_clusters_list[[i]] <- df
+  df_sub$cluster <- cluster_of_GO
+  GO_in_clusters_list[[i]] <- df_sub
   i = i+1
 }
 
@@ -132,8 +138,14 @@ get_ids_per_cluster <- function(df){
   }
   return(proteins_in_clusters_list)
 }
-
 proteins_in_clusters_bArr1 <- get_ids_per_cluster(GO_in_clusters_list[[1]])
 proteins_in_clusters_bArr2 <- get_ids_per_cluster(GO_in_clusters_list[[2]])
 
-# translation of uniprot ids missing
+# export details from clustering
+path_to_results = r"(B:\FuL\IMZ01\Hoffmann\Personal data folders\Mona\Paper\XXX_Haider et al_Review\barr1+2 interactome\230307_cluster_details)"
+setwd(path_to_results)
+write.xlsx(proteins_in_clusters_bArr1, file = "proteins_in_clusters_bArr1.xlsx")
+write.xlsx(proteins_in_clusters_bArr2, file = "proteins_in_clusters_bArr2.xlsx")
+names(GO_in_clusters_list) <- c("bArr1", "bArr2", "both")
+write.xlsx(GO_in_clusters_list, file = "GO_in_clusters_list.xlsx")
+
