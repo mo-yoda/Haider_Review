@@ -93,6 +93,7 @@ GOs_list[["bArr1"]] <- c(chart_list[[1]]$ID)
 GOs_list[["bArr2"]] <- c(chart_list[[2]]$ID)
 # GOs_list[["both"]] <- c(chart_list[[3]]$ID)
 simplifyGOFromMultipleLists(GOs_list)
+# 0.1 p value cutoff does not improve visualization
 
 # with p values
 create_p_GO <- function(df){
@@ -105,7 +106,7 @@ p_GO_list[["bArr1"]] <- create_p_GO(chart_list[[1]])
 p_GO_list[["bArr2"]] <- create_p_GO(chart_list[[2]])
 
 simplifyGOFromMultipleLists(p_GO_list)
-
+# does not improve visualization
 
 ### improve heatmap display ###
 simplifyGOFromMultipleLists(sig_GOs_list,
@@ -139,8 +140,6 @@ for (df in chart_list){
 get_ids_per_cluster <- function(df){
   proteins_in_clusters_list <- list()
     for (cluster in levels(as.factor(df$cluster))){
-    print("---------------")
-    print(cluster)
     # get uniprot IDs per cluster
     temp_uni_ids <- df$Genes[df$cluster == cluster]
     # as they are sorted per GO term, split + unlist to get one vector per cluster
