@@ -12,7 +12,7 @@ from requests.adapters import HTTPAdapter, Retry
 import pandas as pd
 import xlrd
 
-# # following two lines needed to prevent error when importing xlsx using pd (at home)
+# following two lines needed to prevent error when importing xlsx using pd (at home)
 # xlrd.xlsx.ensure_elementtree_imported(False, None)
 # xlrd.xlsx.Element_has_iter = True
 
@@ -265,9 +265,9 @@ def get_ID_from_mapping_API(id_list):
 ### import interactors retrieved from stringDB via get_stringDB.py
 
 # homeoffice path
-# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
 # IMZ path
-path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+# path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
 
 file = "interactors_stringDB.xlsx"
 
