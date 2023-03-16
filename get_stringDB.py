@@ -63,13 +63,13 @@ df_raw = pd.read_csv(io.StringIO(data_string), sep="\t")
 
 # remove all entries with combined score < 0.5
 df = df_raw[df_raw['score']>=0.5]
-# index is kept in lin above, thus reset index
+# index is kept in line above, thus reset index
 df.reset_index(inplace=True)
 
-# identify non-unique interactors, add columns with unique or non-unique
+# identify non-unique interactors, add column with unique or non-unique
 all_dupl = df.duplicated(subset="stringId_B", keep=False)
 
-# create pd.Series for uniq/bArr1/bArr2
+# create pd.Series for new column containing either both/bArr1/bArr2
 unique = []
 for i, e in enumerate(all_dupl):
     # means if e = True
