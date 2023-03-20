@@ -264,23 +264,14 @@ def get_ID_from_mapping_API(id_list):
 
 ### import interactors retrieved from stringDB via get_stringDB.py
 
-# homeoffice path
-path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
-# IMZ path
-# path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/OG_stringDB_data/'
+path = 'path/to/folder'
 
 file = "interactors_stringDB.xlsx"
-
-## following not needed, since only one xlsx is imported
-# extension = 'xlsx'
-# os.chdir(path)
-# filenames = glob.glob('*.{}'.format(extension))
-# print(filenames)
 
 # import stringDB df
 df = pd.read_excel(path + file)
 ENSP_IDs = df['stringId_B']
-# somehow~ IDs are fetched in a way that their order do no match entirely the order of submitted ENSP IDs
+# somehow~ IDs are fetched in a way that their order does no match entirely the order of submitted ENSP IDs
 # thus, translation df is created and used as dictionary
 ENSP_input = ENSP_IDs.drop_duplicates()
 
