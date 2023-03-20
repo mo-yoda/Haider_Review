@@ -5,15 +5,10 @@ import gzip
 import io
 import os
 
-# homeoffice path
-# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_ID/'
-# IMZ path
-path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_ID/'
+path = 'path/to/folder'
 file = "interactors_stringDB_ID.xlsx"
 column = "uniprot_ID_proteinB"
 
-
-# selected keywords to extract (only ones in category biological process + molecular function)
 def get_rest_api(api_url):
     call = requests.get(api_url, headers={'Accept-Encoding': 'gzip'})
     # Check the response status code
@@ -41,7 +36,6 @@ selected_keywords.to_excel(path + "selected_keywords.xlsx")
 
 # create list with Keyword IDs
 kw_list = selected_keywords["Keyword ID"]
-
 
 # function to import xlsx file with accession numbers, returns all gathered infos
 def uniprotlist(path_to_folder, filename, column_name):
@@ -161,7 +155,6 @@ def get_GO_terms(entry, xml_path, type):
         retrieved_GO = retrieved_GO[2:len(retrieved_GO)]
     return retrieved_GO
 
-
 # function to extract all rows containing a specific value in a specific column, used to identify GPCRs
 def extract_rows(df, column, value):
     return df[(df[column].notnull()) & (df[column].str.contains(value))]
@@ -187,7 +180,6 @@ def export_xlsx(path_to_folder, filename, column_name):
     gpcr_df.to_excel(new_folder + filename[:-5] + "_gpcrs.xlsx")
     nogpcr_df.to_excel(new_folder + filename[:-5] + "_nogpcrs.xlsx")
     return print("Finished")
-
 
 # execute
 export_xlsx(path, file, column)
