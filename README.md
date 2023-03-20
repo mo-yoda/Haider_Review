@@ -28,7 +28,7 @@ University of Nottingham, Nottingham, UK
 
 ---
 ## Short description
-Interacting proteins were retrieved from [stringDB 11.5](https://string-db.org/help/api/) 
+Interacting proteins were retrieved from [STRINGdb 11.5](https://string-db.org/help/api/) 
 [**(Szklarczyk et al. 2018)**](https://doi.org/10.1093/nar/gky1131). 
 GO enrichment analysis was performed using the online tool 
 [Database for Annotation, Visualization and Integrated Discovery (DAVID) 6.8](https://david.ncifcrf.gov/) 
@@ -41,7 +41,7 @@ Enriched GO terms were clustered and visualized using the [R/Bioconductor](https
 
 ---
 ## Workflow
-### 1. Retrieving interacting proteins of β-arrestin1 and 2 from stringDB
+### 1. Retrieving interacting proteins of β-arrestin1 and 2 from STRINGdb
 #### [get_stringDB.py](https://github.com/mo-yoda/Haider_Review/blob/master/get_stringDB.py)
 - retrieves all proteins interacting with β-arrestin1 or 2 from stringDB using 
 [stringDB API](https://string-db.org/help/api/)
@@ -59,7 +59,7 @@ of the interaction (whether this interaction is unique to one of the β-arrestin
 
 ### 2. Translating ENSP IDs to uniprot accession number
 #### [ENSP_to_uniprotID.py](https://github.com/mo-yoda/Haider_Review/blob/master/ENSP_to_uniprotID.py)
-- translates ENSP IDs exported from stringDB to uniprot accession number using the 
+- translates ENSP IDs exported from STRINGdb to uniprot accession number using the 
 [uniprot ID mapping tool](https://www.uniprot.org/id-mapping) via
 [the API](https://www.uniprot.org/help/id_mapping)
 - *Note, that order of fetched IDs do not match order of requested IDs* - 
