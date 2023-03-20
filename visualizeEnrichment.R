@@ -7,7 +7,6 @@ has <- wants %in% rownames(installed.packages())
 if(any(!has)) install.packages(wants[!has])
 lapply(wants, require, character.only = TRUE)
 
-
 ### functions ###
 
 # in chart table second column "Term" has GO IDs and text
@@ -26,11 +25,7 @@ format_chart <- function(chart){
 }
 
 ### paths and import ###
-# homeoffice path
-# path =
-# IMZ path
-path <- r"(B:\FuL\IMZ01\Hoffmann\Personal data folders\Mona\Paper\XXX_Haider et al_Review\barr1+2 interactome\230227_PPI_analysis_THIS\after talking to Dario_THIS\without GPCRs)"
-# enr_background <- r"(\enrichment specific against all interactors)"
+path <- r"(path\to\folder)"
 enr_background <- r"(\enr specific against all interactors)"
 subpath <- r"(\only biological process annot)"
 
@@ -115,17 +110,43 @@ simplifyGOFromMultipleLists(sig_GOs_list,
                             word_cloud_grob_param = list(max_width = 110))
 
 ### get details from clustering ###
+# GOs in each cluster
 GO_clusters <- simplifyGOFromMultipleLists(sig_GOs_list, plot = FALSE)
+# grouping is correct, order of clusters in heatmap is different
+# translate cluster names into order in heatmap
+cluster_translation <- as.data.frame(levels(as.factor(GO_clusters$cluster)))
+heatmap_cluster <- c()
+i = 1
+for (cluster in cluster_translation$`levels(as.factor(GO_clusters$cluster))`){
+  cluster_length <- length(GO_clusters$id[GO_clusters$cluster == cluster])
+  if (cluster_length == 1){
+    heatmap_cluster <- c(heatmap_cluster, "NA")
+  }else{
+    heatmap_cluster <- c(heatmap_cluster, i)
+    i = i+1
+  }
+}
+# translation table
+cluster_translation$cluster_in_heatmap <- heatmap_cluster
+
+# add translated clusters to GO_cluster df
+heatmap_cluster <- c()
+for (row in 1:length(GO_clusters$cluster)){
+  temp <- GO_clusters$cluster[row]
+  temp_translation <- cluster_translation$cluster_in_heatmap[cluster_translation$`levels(as.factor(GO_clusters$cluster))` == temp]
+  heatmap_cluster <- c(heatmap_cluster, temp_translation)
+}
+GO_clusters$cluster_in_heatmap <- heatmap_cluster
 
 # get cluster of placement of each GO term
 # add column to initial data which holds the cluster in which this GO term was clustered
 GO_in_clusters_list <- list()
 i = 1
-for (df in chart_list){
+for (df in chart_list[1:2]){
   cluster_of_GO <- c()
   df_sub <- df[df$PValue < 0.05, ]
   for (GO in df_sub$ID){
-    temp_cluster <- GO_clusters$cluster[GO_clusters$id == GO]
+    temp_cluster <- GO_clusters$cluster_in_heatmap[GO_clusters$id == GO]
     if(length(temp_cluster) == 0){
       temp_cluster <- "NA"
     }
@@ -153,12 +174,14 @@ get_ids_per_cluster <- function(df){
 }
 proteins_in_clusters_bArr1 <- get_ids_per_cluster(GO_in_clusters_list[[1]])
 proteins_in_clusters_bArr2 <- get_ids_per_cluster(GO_in_clusters_list[[2]])
+GO_in_clusters_list[[1]] <- GO_in_clusters_list[[1]][c("Category" , "Term", "Count", "PValue", "Genes", "Fold.Enrichment", "ID", "cluster")]
+GO_in_clusters_list[[2]] <- GO_in_clusters_list[[2]][c("Category" , "Term", "Count", "PValue", "Genes", "Fold.Enrichment", "ID", "cluster")]
 
 # export details from clustering
-path_to_results = r"(B:\FuL\IMZ01\Hoffmann\Personal data folders\Mona\Paper\XXX_Haider et al_Review\barr1+2 interactome\230307_cluster_details)"
+path_to_results = r"(path\to\folder)"
 setwd(path_to_results)
 write.xlsx(proteins_in_clusters_bArr1, file = "proteins_in_clusters_bArr1.xlsx")
 write.xlsx(proteins_in_clusters_bArr2, file = "proteins_in_clusters_bArr2.xlsx")
-names(GO_in_clusters_list) <- c("bArr1", "bArr2", "both")
+names(GO_in_clusters_list) <- c("bArr1", "bArr2")
 write.xlsx(GO_in_clusters_list, file = "GO_in_clusters_list.xlsx")
 
