@@ -1,4 +1,4 @@
-# β-Arrestins Interactome analysis
+# β-Arrestins Interactome Analysis
 ## Conformational flexibility of β-arrestins – how these scaffolding proteins guide and transform the functionality of GPCRs
 
 Raphael Silvanus Haider*[1,2] ,  Mona Reichel*[1], Edda Sofie Fabienne Matthees[1], Carsten Hoffmann[1]
