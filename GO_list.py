@@ -1,12 +1,8 @@
 import pandas as pd
 import os
 
-# homeoffice path
-# path = 'C:/Users/monar/Google Drive/Arbeit/homeoffice/230103_RH review/barr1+2 interactome/stringDB_data/uniprot_details/'
-# IMZ path
-path = 'B:/FuL/IMZ01/Hoffmann/Personal data folders/Mona/Paper/XXX_Haider et al_Review/barr1+2 interactome/stringDB_data/uniprot_details/'
-file = "interactors_stringDB_ID_nogpcrs.xlsx"
-
+path = 'path/to/folder'
+file = "interactors_stringDB_ID_all.xlsx"
 
 # function subset df to needed columns and factors
 def format_df(df):
