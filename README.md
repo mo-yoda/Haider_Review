@@ -120,4 +120,5 @@ to their similarity and displayed as heatmap using `simplifyGOFromMultipleLists(
   (*Note, that one protein can contribute to several clusters as each protein has several GO terms assigned*)
 
 ---
-### LICENSE
+
+This project is licensed under the terms of the MIT license.
