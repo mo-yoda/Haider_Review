@@ -17,12 +17,12 @@ my_genes = ["9606.ENSP00000409581", "9606.ENSP00000403701"]
 # what we need:
 # /api/tsv/interaction_partners? -> Gets all the STRING interaction partners of your proteins
 
-# api parameters, see help site for options
+# parameters, see help site for options
 string_api_url = "https://string-db.org/api"
 output_format = "tsv"
 method = "interaction_partners"
 
-# built request api
+# built request
 # https://string-db.org/api/[output-format]/interaction_partners?identifiers=[your_identifiers]&[optional_parameters]
 request_url = "/".join([string_api_url, output_format, method])
 print(request_url)
