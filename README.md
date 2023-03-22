@@ -94,12 +94,14 @@ which are GPCRs and non-GPCRs
 ### 4. GO enrichment analysis via DAVID
 GO enrichment analysis of the biological process ontology was performed using the online tool 
 [DAVID 6.8](https://david.ncifcrf.gov/).
-Uniprot accession numbers of non-GPCR proteins obtained from extract_uniprot_info.py were used as input.
+Uniprot accession numbers of non-GPCR proteins obtained from 
+[extract_uniprot_info.py](https://github.com/mo-yoda/Haider_Review/blob/master/extract_uniprot_info.py) 
+were used as input.
 
 In detail, functional annotation analysis was performed using the uniprot accession IDs of non-GPCR proteins
 interacting with exclusively one β-arrestin isoform (gene list input) against all non-GPCR interacting proteins 
 of this isoform (background).The functional annotation chart created by DAVID was downloaded and used in the last
-step visualizeEnrichment.R.
+step [visualizeEnrichment.R](https://github.com/mo-yoda/Haider_Review/blob/master/visualizeEnrichment.R).
 
 ---
 
