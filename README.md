@@ -43,8 +43,8 @@ Enriched GO terms were clustered and visualized using the [R/Bioconductor](https
 ## Workflow
 ### 1. Retrieving interacting proteins of β-arrestin1 and 2 from STRINGdb
 #### [get_stringDB.py](https://github.com/mo-yoda/Haider_Review/blob/master/get_stringDB.py)
-- retrieves all proteins interacting with β-arrestin1 or 2 from stringDB using 
-[stringDB API](https://string-db.org/help/api/)
+- retrieves all proteins interacting with β-arrestin1 or 2 from STRINGdb using 
+[STRINGdb API](https://string-db.org/help/api/)
 - entries with  confidence score < 0.5 are removed
 - returns xlsx file with ENSP of interacting proteins, confidence score of this interaction and the "uniqueness" 
 of the interaction (whether this interaction is unique to one of the β-arrestin isoforms)
